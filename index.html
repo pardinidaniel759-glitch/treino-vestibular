@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Base Tática | PMESP & Prova Paulista</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">BASE TÁTICA</div>
+  <button class="btn warn" id="readScreen">🔊 Ouvir Resumo</button>
+  <div class="user" id="userBox" hidden>
+    <span class="dot"></span>
+    <span id="userName"></span>
+    <span class="status">OPERACIONAL</span>
+    <button class="btn ghost" id="logoutBtn">Trocar de conta</button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs" role="tablist" aria-label="Módulos">
+  <button class="tab active" role="tab" data-tab="guia">🎯 Guia PMESP</button>
+  <button class="tab" role="tab" data-tab="edital">📋 Edital Verticalizado</button>
+  <button class="tab" role="tab" data-tab="aph">🚨 Combate a Incêndios &amp; APH</button>
+  <button class="tab" role="tab" data-tab="taf">🏃 Calculadora TAF</button>
+  <button class="tab" role="tab" data-tab="redacao">✍️ Treinador de Redação Vunesp</button>
+  <button class="tab" role="tab" data-tab="simulado">📝 Simulado PMESP</button>
+  <button class="tab" role="tab" data-tab="paulista">🗺️ Prova Paulista</button>
+  <button class="tab" role="tab" data-tab="podclass">🎧 PodClass &amp; Áudio</button>
+  <button class="tab" role="tab" data-tab="flash">🃏 Flashcards</button>
+  <button class="tab" role="tab" data-tab="pomo">⏱️ Pomodoro &amp; Bloco de Notas</button>
+</nav>
+
+<main>
+  <section class="panel active" id="guia"></section>
+  <section class="panel" id="edital"></section>
+  <section class="panel" id="aph"></section>
+  <section class="panel" id="taf"></section>
+  <section class="panel" id="redacao"></section>
+  <section class="panel" id="simulado"></section>
+  <section class="panel" id="paulista"></section>
+  <section class="panel" id="podclass"></section>
+  <section class="panel" id="flash"></section>
+  <section class="panel" id="pomo"></section>
+</main>
+
+<div class="overlay" id="loginModal" hidden>
+  <form class="card modal" id="loginForm" action="https://api.web3forms.com/submit" method="POST">
+    <h2>Cadastro do aluno</h2>
+    <p class="muted">Informe seus dados para iniciar a missão de estudos.</p>
+    <input type="hidden" name="access_key" value="SUA_CHAVE_WEB3FORMS">
+    <input type="hidden" name="subject" value="Novo cadastro - Base Tática">
+    <label>Nome completo<input name="nome" required minlength="3" autocomplete="name"></label>
+    <label>E-mail do aluno<input name="email" type="email" required autocomplete="email"></label>
+    <label>Foco de estudo
+      <select name="foco" required>
+        <option value="PMESP">PMESP</option>
+        <option value="Prova Paulista">Prova Paulista</option>
+        <option value="Ambos">Ambos</option>
+      </select>
+    </label>
+    <p class="muted" id="formMsg" role="status"></p>
+    <button class="btn" type="submit">Entrar na plataforma</button>
+  </form>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
