@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Base Tática | PMESP & Prova Paulista</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<aside id="side">
+  <div class="brand">🎯 BASE TÁTICA<small>PMESP · Prova Paulista</small></div>
+  <nav id="chan" aria-label="Canais"></nav>
+</aside>
+<div class="shade" id="shade"></div>
+<div class="col">
+  <header class="hud">
+    <button id="burg" aria-label="Abrir menu">☰</button>
+    <h1 id="title"># guia-de-estudos</h1>
+    <input id="q" type="search" placeholder="Buscar canal (Enter abre)" aria-label="Buscar canal">
+    <div class="chip" title="Status do candidato, pelo progresso do edital">🪖 <b id="hRank"></b></div>
+    <div class="chip" title="Meta diária de questões">🎯 <b id="hMeta"></b><div class="bar"><i id="hBar"></i></div></div>
+  </header>
+  <main>
+    <section id="guia" class="view on"></section>
+    <section id="edital" class="view"></section>
+    <section id="fogo" class="view"></section>
+    <section id="extintor" class="view"></section>
+    <section id="aph" class="view"></section>
+    <section id="taf" class="view"></section>
+    <section id="pm" class="view"></section>
+    <section id="mapa" class="view"></section>
+    <section id="pp" class="view"></section>
+    <section id="redacao" class="view"></section>
+    <section id="flash" class="view"></section>
+    <section id="pomo" class="view">
+      <h2>Cronômetro Pomodoro</h2>
+      <div class="card static center">
+        <div id="modo" class="muted">Estudo</div>
+        <div id="tempo" class="big">25:00</div>
+        <div class="row">
+          <label>Estudo (min) <input type="number" id="tE" value="25" min="1" max="120"></label>
+          <label>Descanso (min) <input type="number" id="tD" value="5" min="1" max="60"></label>
+        </div>
+        <div class="row"><button class="btn" id="pIni">Iniciar</button><button class="btn ghost" id="pRes">Reiniciar</button></div>
+      </div>
+    </section>
+    <section id="notas" class="view">
+      <h2>Anotações</h2>
+      <div class="card static"><textarea id="nota" placeholder="Escreva aqui. O texto é salvo automaticamente neste navegador."></textarea><p class="muted" id="salvo"></p></div>
+    </section>
+    <section id="metas" class="view"></section>
+    <section id="pod" class="view"></section>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
