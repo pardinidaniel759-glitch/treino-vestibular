@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Plataforma PMESP e Prova Paulista</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--y:#CCFF00;--bg:#000;--sf:#0e0e0e;--ln:#2a2a2a;--tx:#f2f2f2;--mu:#9a9a9a;--hd:52px}
+*{box-sizing:border-box;margin:0}
+html{scroll-padding-top:calc(var(--hd) + 8px)}
+body{background:var(--bg);color:var(--tx);font:400 16px/1.6 Inter,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+h1,h2,h3,.brand{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;letter-spacing:.01em;line-height:1.1}
+h2{font-size:2rem;margin-bottom:.5rem}h3{font-size:1.25rem;color:var(--y);margin-bottom:.35rem}
+p,li{max-width:70ch}p+p{margin-top:.6rem}
+:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--ln);padding-top:env(safe-area-inset-top,0px)}
+.bar{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:.75rem;height:var(--hd);padding:0 1rem}
+.brand{font-size:1.4rem;color:var(--y);white-space:nowrap}
+.brand small{color:var(--tx);font-size:.95rem;font-weight:600;margin-left:.4rem}
+.sp{flex:1}
+.btn{background:var(--y);color:#000;border:0;border-radius:6px;font:600 .9rem Inter,sans-serif;padding:.55rem 1rem;cursor:pointer;min-height:40px}
+.btn.o{background:transparent;color:var(--y);border:1px solid var(--y)}
+.btn:active{transform:translateY(1px)}
+nav{border-top:1px solid var(--ln)}
+nav .in{max-width:1000px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none;padding:0 .5rem}
+nav .in::-webkit-scrollbar{display:none}
+nav button{flex:none;background:none;border:0;border-bottom:3px solid transparent;color:var(--mu);font:500 .9rem Inter,sans-serif;padding:.7rem .8rem;cursor:pointer;white-space:nowrap}
+nav button[aria-selected=true]{color:var(--y);border-bottom-color:var(--y)}
+main{max-width:1000px;margin:0 auto;padding:1.5rem 1rem calc(3rem + env(safe-area-inset-bottom,0px))}
+section[hidden]{display:none}
+.grid{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:1rem}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:1rem}
+.card ul,.card ol{padding-left:1.1rem;color:#d6d6d6}
+.mu{color:var(--mu);font-size:.9rem}
+.bd{height:8px;background:var(--ln);border-radius:4px;overflow:hidden;margin:.6rem 0 1rem}
+.bd i{display:block;height:100%;width:0;background:var(--y);transition:width .25s}
+label.ck{display:flex;gap:.6rem;align-items:flex-start;padding:.3rem 0;cursor:pointer}
+input[type=checkbox],input[type=radio]{accent-color:var(--y);width:18px;height:18px;margin-top:.2rem;flex:none}
+input[type=text],input[type=email],input[type=tel],input[type=url],input[type=number],select,textarea{width:100%;background:#050505;color:var(--tx);border:1px solid var(--ln);border-radius:6px;padding:.65rem .75rem;font:inherit}
+textarea{min-height:200px;resize:vertical}
+table{width:100%;border-collapse:collapse;margin-top:1rem}
+th,td{text-align:left;padding:.6rem .5rem;border-bottom:1px solid var(--ln);font-size:.95rem}
+th{color:var(--y);font-weight:600}
+.tw{overflow-x:auto}
+.fc{min-height:180px;display:grid;place-items:center;text-align:center;padding:1.5rem;cursor:pointer;font-size:1.2rem;border:1px solid var(--y);border-radius:8px;background:var(--sf);margin:1rem 0}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.timer{font:700 5rem/1 'Barlow Condensed',sans-serif;color:var(--y);margin:.5rem 0}
+.q{margin:1rem 0}.ok{color:var(--y)}.no{color:#ff6b6b}
+dialog{background:var(--sf);color:var(--tx);border:1px solid var(--y);border-radius:10px;padding:1.25rem;width:min(92vw,400px);margin:auto}
+dialog::backdrop{background:rgba(0,0,0,.8)}
+dialog form{display:flex;flex-direction:column;gap:.75rem}
+dialog label{font-size:.9rem;color:var(--mu);display:flex;flex-direction:column;gap:.25rem}
+#msg{min-height:1.3em;font-size:.9rem}
+@media(max-width:600px){
+ :root{--hd:40px}
+ .bar{gap:.5rem;padding:0 .6rem}
+ .brand{font-size:1.15rem}.brand small{display:none}
+ .btn{padding:.35rem .7rem;font-size:.8rem;min-height:32px}
+ nav button{padding:.5rem .6rem;font-size:.82rem}
+ main{padding-top:1rem}
+ h2{font-size:1.6rem}.timer{font-size:4rem}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+ <div class="bar">
+  <div class="brand">PMESP<small>Prova Paulista</small></div>
+  <div class="sp"></div>
+  <button class="btn" id="abrir">Cadastrar</button>
+ </div>
+ <nav aria-label="Seções"><div class="in" role="tablist" id="tabs"></div></nav>
+</header>
+
+<main>
+<section id="guia" hidden>
+ <h2>Guia de estudos</h2>
+ <p>Um caminho simples para ir do edital à prova: entenda o que cai, estude em ciclos curtos, treine com questões e revise o que errou.</p>
+ <div class="grid">
+  <div class="card"><h3>1. Mapeie</h3><p>Marque no Edital Verticalizado o que você já domina e o que ainda precisa ver.</p></div>
+  <div class="card"><h3>2. Estude</h3><p>Use o Estudo Intensivo e o Pomodoro para sessões focadas, com pausas.</p></div>
+  <div class="card"><h3>3. Treine</h3><p>Faça o Simulado, escreva na Redação Vunesp e registre suas marcas no TAF.</p></div>
+  <div class="card"><h3>4. Revise</h3><p>Transforme erros em Flashcards e ouça o PodClass nos deslocamentos.</p></div>
+ </div>
+ <p class="mu" style="margin-top:1.2rem">Seu progresso fica salvo neste navegador.</p>
+</section>
+
+<section id="edital" hidden>
+ <h2>Edital verticalizado</h2>
+ <p class="mu">Ajuste os tópicos conforme o edital do seu concurso.</p>
+ <div class="bd" aria-hidden="true"><i id="pg"></i></div>
+ <p id="pgt" class="mu"></p>
+ <div class="grid" id="ed"></div>
+</section>
+
+<section id="astra" hidden>
+ <h2>Estudo intensivo (Astra)</h2>
+ <p>Monte o ciclo do dia: defina o foco, estude a teoria, resolva questões e feche com revisão.</p>
+ <div class="grid">
+  <div class="card"><h3>Foco do dia</h3><input type="text" data-save="ast_foco" placeholder="Ex.: Direitos Humanos"></div>
+  <div class="card"><h3>Teoria</h3><input type="text" data-save="ast_teo" placeholder="Tópico e material"></div>
+  <div class="card"><h3>Questões</h3><input type="text" data-save="ast_q" placeholder="Meta de questões"></div>
+  <div class="card"><h3>Revisão</h3><input type="text" data-save="ast_rev" placeholder="O que revisar amanhã"></div>
+ </div>
+</section>
+
+<section id="aph" hidden>
+ <h2>Incêndio e APH</h2>
+ <div class="grid">
+  <div class="card"><h3>Avaliação primária (XABCDE)</h3><ol>
+   <li>X: hemorragia exsanguinante</li><li>A: vias aéreas e coluna cervical</li><li>B: respiração</li><li>C: circulação</li><li>D: estado neurológico</li><li>E: exposição e controle de temperatura</li></ol></div>
+  <div class="card"><h3>Tetraedro do fogo</h3><ul><li>Combustível</li><li>Comburente (oxigênio)</li><li>Calor</li><li>Reação em cadeia</li></ul><p class="mu">Retirar um elemento extingue o fogo.</p></div>
+  <div class="card"><h3>Classes de incêndio</h3><ul><li>A: sólidos comuns (madeira, papel)</li><li>B: líquidos inflamáveis</li><li>C: equipamentos elétricos energizados</li><li>D: metais combustíveis</li><li>K: óleos e gorduras de cozinha</li></ul></div>
+  <div class="card"><h3>Métodos de extinção</h3><ul><li>Resfriamento</li><li>Abafamento</li><li>Isolamento</li><li>Quebra da reação em cadeia</li></ul></div>
+ </div>
+</section>
+
+<section id="taf" hidden>
+ <h2>TAF</h2>
+ <p>Registre sua melhor marca em cada prova e compare com o índice do edital.</p>
+ <div class="tw"><table>
+  <tr><th>Prova</th><th>Índice do edital</th><th>Minha marca</th></tr>
+  <tr><td>Corrida</td><td><input type="text" data-save="taf_i1" aria-label="Índice corrida"></td><td><input type="text" data-save="taf_m1" aria-label="Marca corrida"></td></tr>
+  <tr><td>Flexão de braço</td><td><input type="text" data-save="taf_i2" aria-label="Índice flexão"></td><td><input type="text" data-save="taf_m2" aria-label="Marca flexão"></td></tr>
+  <tr><td>Abdominal</td><td><input type="text" data-save="taf_i3" aria-label="Índice abdominal"></td><td><input type="text" data-save="taf_m3" aria-label="Marca abdominal"></td></tr>
+  <tr><td>Barra ou suspensão</td><td><input type="text" data-save="taf_i4" aria-label="Índice barra"></td><td><input type="text" data-save="taf_m4" aria-label="Marca barra"></td></tr>
+ </table></div>
+</section>
+
+<section id="redacao" hidden>
+ <h2>Redação Vunesp</h2>
+ <div class="grid">
+  <div class="card"><h3>Estrutura</h3><ul><li>Introdução: tema e tese</li><li>Desenvolvimento: argumentos com exemplos</li><li>Conclusão: fechamento e proposta, se pedida</li></ul></div>
+  <div class="card"><h3>Antes de entregar</h3><ul><li>Respeite o tema e o gênero pedidos</li><li>Confira o limite de linhas do edital</li><li>Releia ortografia e pontuação</li></ul></div>
+ </div>
+ <div class="card" style="margin-top:1rem">
+  <textarea id="red" data-save="redacao" placeholder="Escreva seu texto aqui" aria-label="Texto da redação"></textarea>
+  <p class="mu" id="cnt" style="margin-top:.5rem"></p>
+ </div>
+</section>
+
+<section id="simulado" hidden>
+ <h2>Simulado</h2>
+ <p class="mu">Três questões de exemplo. Substitua pelo seu banco de questões.</p>
+ <div id="qs"></div>
+ <div class="row"><button class="btn" id="corrigir">Corrigir</button><span id="res" class="ok"></span></div>
+</section>
+
+<section id="podclass" hidden>
+ <h2>PodClass</h2>
+ <p>Cole o link direto de um áudio (.mp3) para ouvir e salve os que mais usa.</p>
+ <div class="card" style="margin-top:1rem">
+  <div class="row"><input type="url" id="aurl" placeholder="https://.../aula.mp3" aria-label="Link do áudio" style="flex:1;min-width:200px"><button class="btn" id="tocar">Carregar</button></div>
+  <audio id="au" controls style="width:100%;margin-top:1rem"></audio>
+ </div>
+</section>
+
+<section id="flash" hidden>
+ <h2>Flashcards</h2>
+ <p class="mu">Toque no cartão para virar.</p>
+ <div class="fc" id="fc" role="button" tabindex="0" aria-live="polite"></div>
+ <div class="row"><button class="btn o" id="prev">Anterior</button><button class="btn o" id="next">Próximo</button><span class="mu" id="fn"></span></div>
+</section>
+
+<section id="pomo" hidden>
+ <h2>Pomodoro e notas</h2>
+ <div class="grid">
+  <div class="card">
+   <div class="row"><button class="btn" data-m="25">Foco 25</button><button class="btn o" data-m="5">Pausa 5</button></div>
+   <div class="timer" id="tm">25:00</div>
+   <div class="row"><button class="btn" id="go">Iniciar</button><button class="btn o" id="rs">Zerar</button></div>
+  </div>
+  <div class="card"><h3>Notas</h3><textarea data-save="notas" placeholder="Anote dúvidas e ideias" aria-label="Notas" style="min-height:160px"></textarea></div>
+ </div>
+</section>
+</main>
+
+<dialog id="dlg">
+ <form id="frm">
+  <h2>Cadastro</h2>
+  <input type="hidden" name="access_key" value="SUA_ACCESS_KEY_AQUI">
+  <input type="hidden" name="subject" value="Novo cadastro - Plataforma PMESP">
+  <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+  <label>Nome completo<input type="text" name="nome" required autocomplete="name"></label>
+  <label>E-mail<input type="email" name="email" required autocomplete="email"></label>
+  <label>WhatsApp<input type="tel" name="whatsapp" autocomplete="tel"></label>
+  <label>Concurso
+   <select name="concurso"><option>PMESP</option><option>Prova Paulista</option><option>Ambos</option></select>
+  </label>
+  <div id="msg" role="status"></div>
+  <button class="btn" type="submit">Enviar cadastro</button>
+  <button class="btn o" type="button" id="fechar">Fechar</button>
+ </form>
+</dialog>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const S={g(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch{return d}},s(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+
+/* Abas */
+const T=[["guia","Guia"],["edital","Edital Verticalizado"],["astra","Estudo Intensivo (Astra)"],["aph","Incêndio/APH"],["taf","TAF"],["redacao","Redação Vunesp"],["simulado","Simulado"],["podclass","PodClass"],["flash","Flashcards"],["pomo","Pomodoro/Notas"]];
+const ids={astra:"astra",flash:"flash",pomo:"pomo",aph:"aph"};
+const tabs=$("#tabs");
+T.forEach(([id,l])=>{const b=document.createElement("button");b.role="tab";b.textContent=l;b.dataset.t=id;b.onclick=()=>show(id);tabs.append(b)});
+function show(id){
+ if(!T.some(t=>t[0]===id))id="guia";
+ $$("main>section").forEach(s=>s.hidden=s.id!==id);
+ $$("#tabs button").forEach(b=>{const on=b.dataset.t===id;b.setAttribute("aria-selected",on);if(on)b.scrollIntoView({inline:"center",block:"nearest"})});
+ history.replaceState(null,"","#"+id);scrollTo(0,0);
+}
+
+/* Campos salvos */
+$$("[data-save]").forEach(e=>{e.value=S.g(e.dataset.save,"");e.addEventListener("input",()=>{S.s(e.dataset.save,e.value);if(e.id==="red")cnt()})});
+function cnt(){const t=$("#red").value.trim();$("#cnt").textContent=(t?t.split(/\s+/).length:0)+" palavras"}cnt();
+
+/* Edital */
+const ED={"Língua Portuguesa":["Interpretação de texto","Ortografia e acentuação","Pontuação","Concordância","Regência e crase"],"Matemática":["Operações e problemas","Razão e proporção","Porcentagem","Geometria básica"],"Conhecimentos Gerais":["Atualidades","História do Brasil","Geografia do Brasil"],"Direitos Humanos":["Declaração Universal","Direitos fundamentais","Uso da força"],"Noções de Direito":["Constitucional","Penal","Administrativo"]};
+const ck=S.g("edital",{});
+const ed=$("#ed");
+Object.entries(ED).forEach(([m,l])=>{const c=document.createElement("div");c.className="card";c.innerHTML="<h3></h3>";c.firstChild.textContent=m;
+ l.forEach(t=>{const k=m+"|"+t,lb=document.createElement("label");lb.className="ck";const i=document.createElement("input");i.type="checkbox";i.checked=!!ck[k];i.onchange=()=>{ck[k]=i.checked;S.s("edital",ck);prog()};lb.append(i,document.createTextNode(t));c.append(lb)});
+ ed.append(c)});
+function prog(){const a=$$("#ed input"),n=a.filter(i=>i.checked).length,p=a.length?Math.round(n/a.length*100):0;$("#pg").style.width=p+"%";$("#pgt").textContent=n+" de "+a.length+" tópicos concluídos ("+p+"%)"}prog();
+
+/* Simulado */
+const Q=[["Qual é a forma correta?",["Houveram muitos candidatos","Houve muitos candidatos","Haviam muitos candidatos"],1],["Quanto é 20% de 150?",["20","25","30"],2],["No APH, o primeiro passo da avaliação primária (XABCDE) é controlar:",["Vias aéreas","Hemorragia exsanguinante","Circulação"],1]];
+$("#qs").innerHTML=Q.map((q,i)=>`<fieldset class="card q" style="border:1px solid var(--ln)"><legend style="padding:0 .4rem">Questão ${i+1}</legend><p>${q[0]}</p>${q[1].map((o,j)=>`<label class="ck"><input type="radio" name="q${i}" value="${j}">${o}</label>`).join("")}</fieldset>`).join("");
+$("#corrigir").onclick=()=>{let a=0;Q.forEach((q,i)=>{const s=document.querySelector(`input[name=q${i}]:checked`);if(s&&+s.value===q[2])a++});$("#res").textContent="Acertos: "+a+" de "+Q.length};
+
+/* PodClass */
+$("#tocar").onclick=()=>{const u=$("#aurl").value.trim();if(u){$("#au").src=u;$("#au").play().catch(()=>{})}};
+
+/* Flashcards */
+const F=[["Tetraedro do fogo: quais elementos?","Combustível, comburente, calor e reação em cadeia."],["Classe de incêndio em líquidos inflamáveis","Classe B."],["O que significa o X do XABCDE?","Hemorragia exsanguinante."],["Crase antes de palavra masculina","Em regra não ocorre, salvo locução com palavra feminina subentendida."]];
+let fi=0,fv=false;
+function fr(){$("#fc").textContent=F[fi][fv?1:0];$("#fn").textContent=(fi+1)+"/"+F.length}
+$("#fc").onclick=()=>{fv=!fv;fr()};$("#fc").onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fv=!fv;fr()}};
+$("#next").onclick=()=>{fi=(fi+1)%F.length;fv=false;fr()};$("#prev").onclick=()=>{fi=(fi-1+F.length)%F.length;fv=false;fr()};fr();
+
+/* Pomodoro */
+let mins=25,left=1500,iv=null;
+const draw=()=>$("#tm").textContent=String(Math.floor(left/60)).padStart(2,"0")+":"+String(left%60).padStart(2,"0");
+function stop(){clearInterval(iv);iv=null;$("#go").textContent="Iniciar"}
+$("#go").onclick=()=>{if(iv)return stop();$("#go").textContent="Pausar";iv=setInterval(()=>{left--;draw();if(left<=0){stop();left=mins*60;draw();try{navigator.vibrate&&navigator.vibrate(300)}catch{}alert("Tempo encerrado!")}},1000)};
+$("#rs").onclick=()=>{stop();left=mins*60;draw()};
+$$("[data-m]").forEach(b=>b.onclick=()=>{mins=+b.dataset.m;stop();left=mins*60;draw()});
+
+/* Cadastro (Web3Forms) */
+const dlg=$("#dlg");
+$("#abrir").onclick=()=>dlg.showModal();
+$("#fechar").onclick=()=>dlg.close();
+dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
+$("#frm").addEventListener("submit",async e=>{
+ e.preventDefault();const m=$("#msg");m.className="";m.textContent="Enviando...";
+ try{
+  const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{Accept:"application/json"},body:new FormData(e.target)});
+  const j=await r.json();
+  if(j.success){m.className="ok";m.textContent="Cadastro enviado com sucesso.";e.target.reset()}
+  else{m.className="no";m.textContent="Não foi possível enviar. Confira a access_key e tente de novo."}
+ }catch{m.className="no";m.textContent="Sem conexão. Tente novamente."}
+});
+
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+show(location.hash.slice(1)||"guia");
+</script>
+</body>
+</html>
