@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASTRA — Preparatório PMESP</title>
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #astra-app, #astra-app * { visibility: visible; }
+      #astra-app { position: absolute; left: 0; top: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body style="background-color: #0e1117; color: #eee; margin: 0; font-family: system-ui, -apple-system, sans-serif;">
+
+  <div id="astra-app"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
