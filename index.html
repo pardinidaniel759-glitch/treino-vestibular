@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>BASE TÁTICA | PMESP & Prova Paulista</title>
+<style>
+:root{--bg:#0a0a0c;--s1:#121215;--s2:#18181c;--br:#2a2a30;--neon:#CCFF00;--tx:#ececf0;--mut:#8b8b96;--ok:#3ddc84;--bad:#ff4d4d;--warn:#ffb300}
+body.oled{--bg:#000;--s1:#0a0a0c;--s2:#121215}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button{font:inherit;cursor:pointer}
+.hdr{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:10px;height:52px;padding:0 16px;background:var(--s1);border-bottom:1px solid var(--neon)}
+.logo{font-weight:800;letter-spacing:2px;color:var(--neon);white-space:nowrap}
+.hdr-r{display:flex;align-items:center;gap:8px;min-width:0}
+.aluno{background:none;border:0;color:var(--tx);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+.badge{border:1px solid var(--neon);color:var(--neon);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700;letter-spacing:1px;white-space:nowrap}
+.ico{background:var(--s2);color:var(--neon);border:1px solid var(--br);border-radius:8px;width:32px;height:30px}
+.tabs{position:sticky;top:52px;z-index:20;display:flex;gap:6px;overflow-x:auto;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--br);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:var(--s1);color:var(--mut);border:1px solid var(--br);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:600;white-space:nowrap}
+.tab.on{background:var(--neon);color:#000;border-color:var(--neon)}
+main{max-width:960px;margin:0 auto;padding:16px}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--s1);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:14px}
+h1,h2,h3{margin:0 0 10px}h2{color:var(--neon);font-size:20px}h3{font-size:16px}
+p{line-height:1.5;color:var(--tx)}small,.mut{color:var(--mut)}
+.btn{background:var(--s2);color:var(--tx);border:1px solid var(--br);border-radius:10px;padding:11px 16px;font-weight:700}
+.btn.pri{background:var(--neon);color:#000;border-color:var(--neon)}
+.btn.bad{background:var(--bad);color:#fff;border-color:var(--bad)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+input,select,textarea{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--br);border-radius:8px;padding:10px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:1px solid var(--neon)}
+label{display:block;margin:10px 0 4px;font-size:13px;color:var(--mut)}
+.bar{height:10px;background:var(--s2);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--neon);transition:width .3s}
+.chk{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--br)}
+.chk input{width:20px;height:20px;accent-color:var(--neon)}
+.ok{color:var(--ok)}.bad-t{color:var(--bad)}.warn{color:var(--warn)}
+.red{display:flex;border:1px solid var(--br);border-radius:8px;overflow:hidden;background:var(--bg)}
+.gut{padding:8px 10px;text-align:right;color:#555;font:14px/24px monospace;user-select:none;background:#050506}
+.gut .on{color:var(--neon)}
+.red textarea{border:0;height:720px;resize:none;font:14px/24px monospace;border-radius:0}
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.88)}
+.modal.on{display:flex}
+.box{width:min(440px,100%);max-height:92vh;overflow:auto;background:var(--s1);border:2px solid var(--neon);border-radius:16px;padding:20px}
+.box .btn{width:100%;margin-top:10px;text-align:left;font-size:16px}
+#foco-tela{display:none}
+body.modo-foco-ativo > *:not(#foco-tela):not(script){display:none!important}
+body.modo-foco-ativo #foco-tela{display:flex;position:fixed;inset:0;z-index:999;background:#000;flex-direction:column;align-items:center;justify-content:center;gap:40px}
+#foco-tempo{font:800 min(24vw,190px)/1 ui-monospace,monospace;color:var(--neon);text-shadow:0 0 28px var(--neon)}
+@media (max-width:768px){
+  .hdr{height:42px;padding:0 10px;gap:6px;flex-wrap:nowrap}
+  .logo{font-size:13px;letter-spacing:1px}
+  .aluno{font-size:12px;max-width:70px}
+  .badge{font-size:9px;padding:1px 6px}
+  .ico{width:28px;height:26px}
+  .tabs{top:42px;padding:6px 8px}
+  .tab{padding:7px 10px;font-size:12px}
+  main{padding:12px}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <span class="logo">BASE TÁTICA</span>
+  <div class="hdr-r">
+    <button class="aluno" id="h-nome" data-open="m-cad" title="Conta">Daniel</button>
+    <span class="badge">OPERACIONAL</span>
+    <button class="ico" id="btn-tema" title="Alternar modo escuro / conta" aria-label="Alternar modo escuro">◐</button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs" role="tablist">
+  <button class="tab on" data-tab="guia">🎯 Guia PMESP</button>
+  <button class="tab" data-tab="edital">📋 Edital Verticalizado</button>
+  <button class="tab" data-tab="astra">⚡ Modo Astra</button>
+  <button class="tab" data-tab="aph">🚨 Incêndio &amp; APH</button>
+  <button class="tab" data-tab="taf">🏃 TAF PMESP</button>
+  <button class="tab" data-tab="redacao">✍️ Redação Vunesp</button>
+  <button class="tab" data-tab="questoes">📝 Questões &amp; Diagnóstico</button>
+  <button class="tab" data-tab="podclass">🎧 PodClass</button>
+  <button class="tab" data-tab="flash">🃏 Flashcards Anki</button>
+  <button class="tab" data-tab="pomo">⏱️ Pomodoro &amp; Notas</button>
+</nav>
+
+<main>
+  <!-- 1. GUIA -->
+  <section class="panel on" id="p-guia">
+    <div class="card"><h2>🎯 Guia PMESP</h2>
+      <p>Projeto exclusivo de <b>Daniel &amp; Camilly</b>. Fluxo tático: Prova objetiva (Vunesp) → Redação → TAF → Avaliação de saúde e psicológica → Investigação social → Curso de formação.</p>
+      <div class="grid">
+        <div class="card"><h3>1. Base</h3><p class="mut">Português, Matemática, Atualidades e Direitos Humanos.</p></div>
+        <div class="card"><h3>2. Treino</h3><p class="mut">Questões cronometradas e Caderno de Erros.</p></div>
+        <div class="card"><h3>3. Físico</h3><p class="mut">Simule o TAF toda semana.</p></div>
+      </div>
+      <div class="row"><button class="btn pri" data-open="m-foco">⚡ Iniciar Modo Foco</button></div>
+    </div>
+  </section>
+
+  <!-- 2. EDITAL -->
+  <section class="panel" id="p-edital">
+    <div class="card"><h2>📋 Edital Verticalizado</h2>
+      <div class="bar"><i id="ed-bar"></i></div>
+      <p><b id="ed-pct">0%</b> <span class="mut">concluído (<span id="ed-n">0</span>/<span id="ed-t">0</span> tópicos)</span></p>
+      <div id="ed-lista"></div>
+      <button class="btn" id="ed-reset">Limpar progresso</button>
+    </div>
+  </section>
+
+  <!-- 3. ASTRA -->
+  <section class="panel" id="p-astra">
+    <div class="card"><h2>⚡ Estudo Intensivo - Modo Astra</h2>
+      <p>Ciclo de alta intensidade: <b>Teoria (20') → Questões (20') → Revisão de erros (10')</b>.</p>
+      <div class="row">
+        <button class="btn pri" data-open="m-foco">🎯 Escolher bloco de foco</button>
+      </div>
+      <label>Objetivo da sessão</label><input id="astra-obj" placeholder="Ex.: Concordância verbal + 20 questões">
+    </div>
+  </section>
+
+  <!-- 4. APH -->
+  <section class="panel" id="p-aph">
+    <div class="card"><h2>🚨 Combate a Incêndio &amp; APH</h2>
+      <div class="grid">
+        <div class="card"><h3>Sequência APH (XABCDE)</h3><p class="mut">Hemorragia exsanguinante, Via aérea, Respiração, Circulação, Déficit neurológico, Exposição.</p></div>
+        <div class="card"><h3>RCP adulto</h3><p class="mut">30 compressões : 2 ventilações, 100-120/min, 5-6 cm de profundidade.</p></div>
+        <div class="card"><h3>Classes de incêndio</h3><p class="mut">A sólidos; B líquidos; C elétrico; D metais; K óleos e gorduras.</p></div>
+        <div class="card"><h3>Triângulo do fogo</h3><p class="mut">Combustível, comburente e calor (+ reação em cadeia = tetraedro).</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. TAF -->
+  <section class="panel" id="p-taf">
+    <div class="card"><h2>🏃 Calculadora TAF Oficial PMESP</h2>
+      <div class="row"><button class="btn pri" data-perfil="M">Masculino</button><button class="btn" data-perfil="F">Feminino</button></div>
+      <div class="grid">
+        <div><label>Flexão de braço (repetições)</label><input type="number" min="0" step="1" data-taf="flexao"><small>Pontos: <b id="pt-flexao">0</b></small></div>
+        <div><label>Abdominal remador (repetições)</label><input type="number" min="0" step="1" data-taf="abdominal"><small>Pontos: <b id="pt-abdominal">0</b></small></div>
+        <div><label>Corrida 50m (segundos)</label><input type="number" min="0" step="0.1" data-taf="corrida50"><small>Pontos: <b id="pt-corrida50">0</b></small></div>
+        <div><label>Corrida 12 min (metros)</label><input type="number" min="0" step="10" data-taf="corrida12"><small>Pontos: <b id="pt-corrida12">0</b></small></div>
+      </div>
+      <h2 style="margin-top:16px">TOTAL: <span id="taf-total">0</span> pts</h2>
+      <h3 id="taf-sit" class="warn">PREENCHA TODOS OS TESTES</h3>
+      <small>Aprovado: ≥ 200 pts sem zerar nenhum teste. Os índices são aproximados: confira a tabela no edital vigente.</small>
+    </div>
+  </section>
+
+  <!-- 6. REDAÇÃO -->
+  <section class="panel" id="p-redacao">
+    <div class="card"><h2>✍️ Treinador de Redação Vunesp (20-30 Linhas)</h2>
+      <div class="red"><div class="gut" id="red-gut"></div><textarea id="red-txt" placeholder="Escreva sua redação..."></textarea></div>
+      <div class="bar" style="margin-top:10px"><i id="red-bar"></i></div>
+      <p><b id="red-cnt">0 linha(s)</b> · <span id="red-msg" class="warn">Comece a escrever.</span></p>
+    </div>
+  </section>
+
+  <!-- 7. QUESTÕES -->
+  <section class="panel" id="p-questoes">
+    <div class="card"><h2>📝 Banco de Questões &amp; Diagnóstico de Erros</h2>
+      <p class="mut">Tags [VUNESP], tema, nível e timer de 3 min/questão. O relatório de erros e o Caderno de Erros aparecem aqui.</p>
+      <div id="questoes-mount"><button class="btn pri" id="q-iniciar">Iniciar Simulado</button></div>
+    </div>
+  </section>
+
+  <!-- 8. PODCLASS -->
+  <section class="panel" id="p-podclass">
+    <div class="card"><h2>🎧 PodClass &amp; Leitor de Voz</h2>
+      <label>Texto para ouvir</label><textarea id="pod-txt" rows="8" placeholder="Cole aqui seu resumo..."></textarea>
+      <label>Velocidade: <b id="pod-vel-v">1.0x</b></label><input type="range" id="pod-vel" min="0.6" max="1.8" step="0.1" value="1">
+      <div class="row" style="margin-top:12px"><button class="btn pri" id="pod-play">▶ Ouvir</button><button class="btn" id="pod-stop">⏹ Parar</button></div>
+    </div>
+  </section>
+
+  <!-- 9. FLASHCARDS -->
+  <section class="panel" id="p-flash">
+    <div class="card"><h2>🃏 Flashcards Anki (Repetição Espaçada)</h2>
+      <div id="flash-mount"><p class="mut">Nenhum card vencido. Erros dos simulados viram cards automaticamente.</p></div>
+      <div class="row"><button class="btn bad" disabled>Errei</button><button class="btn" disabled>Difícil</button><button class="btn" disabled>Bom</button><button class="btn pri" disabled>Fácil</button></div>
+    </div>
+  </section>
+
+  <!-- 10. POMODORO & NOTAS -->
+  <section class="panel" id="p-pomo">
+    <div class="card"><h2>⏱️ Pomodoro</h2>
+      <button class="btn pri" data-open="m-foco">Escolher tempo de foco</button>
+    </div>
+    <div class="card"><h2>Bloco de Notas</h2>
+      <textarea id="notas" rows="10" placeholder="Anotações salvas automaticamente..."></textarea>
+      <small id="notas-st" class="mut"></small>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL FOCO -->
+<div class="modal" id="m-foco" role="dialog" aria-modal="true">
+  <div class="box">
+    <h2>Modo Foco</h2>
+    <p class="mut">Escolha o bloco. A tela ficará limpa, só com o cronômetro.</p>
+    <button class="btn pri" data-foco="25">⚡ 25 Min - Pomodoro</button>
+    <button class="btn pri" data-foco="45">🔥 45 Min - Bloco Tático</button>
+    <button class="btn pri" data-foco="50">🎯 50 Min - Imersão Vunesp</button>
+    <button class="btn bad" data-close="m-foco">❌ Sair do Modo Foco</button>
+  </div>
+</div>
+
+<!-- MODAL CADASTRO -->
+<div class="modal" id="m-cad" role="dialog" aria-modal="true">
+  <div class="box">
+    <h2>Cadastro Operacional</h2>
+    <label for="c-nome">Nome Completo</label><input id="c-nome" autocomplete="name">
+    <label for="c-email">E-mail</label><input id="c-email" type="email" autocomplete="email">
+    <label for="c-zap">WhatsApp</label><input id="c-zap" type="tel" placeholder="(11) 90000-0000" autocomplete="tel">
+    <label for="c-conc">Concurso</label>
+    <select id="c-conc"><option>PMESP</option><option>Prova Paulista</option></select>
+    <p id="c-err" class="bad-t" style="min-height:18px;margin:8px 0 0"></p>
+    <button class="btn pri" id="c-ok" style="text-align:center">Ativar Acesso Tático</button>
+  </div>
+</div>
+
+<!-- TELA DO MODO FOCO -->
+<div id="foco-tela">
+  <div id="foco-tempo">00:00</div>
+  <button class="btn bad" id="foco-fim" style="font-size:20px;padding:14px 28px">ENCERRAR SESSÃO</button>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,e){return (e||document).querySelector(s)}, $$=function(s,e){return Array.prototype.slice.call((e||document).querySelectorAll(s))};
+var LS={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+var pad=function(n){return String(n).padStart(2,'0')};
+
+/* Abas */
+function aba(id){$$('.tab').forEach(function(t){t.classList.toggle('on',t.dataset.tab===id)});$$('.panel').forEach(function(p){p.classList.toggle('on',p.id==='p-'+id)});var t=$('.tab.on');if(t&&t.scrollIntoView)t.scrollIntoView({inline:'center',block:'nearest'})}
+$('#tabs').addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(b)aba(b.dataset.tab)});
+
+/* Modais */
+document.addEventListener('click',function(e){
+  var o=e.target.closest('[data-open]');if(o)$('#'+o.dataset.open).classList.add('on');
+  var c=e.target.closest('[data-close]');if(c)$('#'+c.dataset.close).classList.remove('on');
+  if(e.target.classList.contains('modal')&&e.target.id!=='m-cad')e.target.classList.remove('on');
+});
+
+/* Tema */
+if(LS.get('bt_oled',false))document.body.classList.add('oled');
+$('#btn-tema').addEventListener('click',function(){var on=document.body.classList.toggle('oled');LS.set('bt_oled',on)});
+
+/* Cadastro (localStorage; sem dependência de API) */
+var user=LS.get('bt_user',null);
+function pintaUser(){$('#h-nome').textContent=user?user.nome.split(' ')[0]:'Daniel'}
+$('#c-ok').addEventListener('click',function(){
+  var n=$('#c-nome').value.trim(),m=$('#c-email').value.trim();
+  if(!n||!/^\S+@\S+\.\S+$/.test(m)){$('#c-err').textContent='Informe nome e e-mail válidos.';return}
+  user={nome:n,email:m,whatsapp:$('#c-zap').value.trim(),concurso:$('#c-conc').value,status:'OPERACIONAL'};
+  LS.set('bt_user',user);pintaUser();$('#m-cad').classList.remove('on');
+  try{if(window.WEB3FORMS_KEY)fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({access_key:window.WEB3FORMS_KEY,name:n,email:m})}).catch(function(){})}catch(e){}
+});
+pintaUser();if(!user)$('#m-cad').classList.add('on');
+
+/* Modo Foco */
+var foco={t:null,resta:0,total:0};
+function focoFim(){clearInterval(foco.t);foco.t=null;document.body.classList.remove('modo-foco-ativo')}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-foco]');if(!b)return;
+  $('#m-foco').classList.remove('on');focoFim();
+  foco.resta=foco.total=parseInt(b.dataset.foco,10)*60;
+  document.body.classList.add('modo-foco-ativo');
+  var tick=function(){$('#foco-tempo').textContent=pad(Math.floor(foco.resta/60))+':'+pad(foco.resta%60)};tick();
+  foco.t=setInterval(function(){foco.resta--;tick();if(foco.resta<=0)focoFim()},1000);
+});
+$('#foco-fim').addEventListener('click',focoFim);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')focoFim()});
+
+/* Edital verticalizado */
+var EDITAL={'Língua Portuguesa':['Interpretação de texto','Concordância verbal e nominal','Regência e crase','Pontuação','Semântica e sinônimos'],
+ 'Matemática':['Razão e proporção','Regra de três','Porcentagem','Raciocínio lógico','Geometria básica'],
+ 'Direitos Humanos':['DUDH','Constituição - Direitos fundamentais','Tortura e abuso de autoridade'],
+ 'Direito Penal e Constitucional':['Legítima defesa e excludentes','Crimes contra a pessoa','Poder de polícia'],
+ 'Atualidades':['Segurança pública','Política e economia','Meio ambiente']};
+var edSalvo=LS.get('bt_edital',{});
+function edRender(){
+  var h='',t=0,n=0;
+  Object.keys(EDITAL).forEach(function(d){h+='<h3 style="margin-top:14px;color:var(--neon)">'+d+'</h3>';
+    EDITAL[d].forEach(function(tp){var k=d+'|'+tp;t++;if(edSalvo[k])n++;
+      h+='<label class="chk"><input type="checkbox" data-k="'+k.replace(/"/g,'&quot;')+'"'+(edSalvo[k]?' checked':'')+'><span>'+tp+'</span></label>'})});
+  $('#ed-lista').innerHTML=h;var p=t?Math.round(n/t*100):0;
+  $('#ed-bar').style.width=p+'%';$('#ed-pct').textContent=p+'%';$('#ed-n').textContent=n;$('#ed-t').textContent=t;
+}
+$('#ed-lista').addEventListener('change',function(e){var k=e.target.dataset.k;if(!k)return;edSalvo[k]=e.target.checked;LS.set('bt_edital',edSalvo);edRender()});
+$('#ed-reset').addEventListener('click',function(){edSalvo={};LS.set('bt_edital',edSalvo);edRender()});
+edRender();
+
+/* TAF (âncoras aproximadas: CONFERIR NO EDITAL) */
+var TB={M:{flexao:[[0,0],[10,40],[20,70],[30,100]],abdominal:[[0,0],[15,40],[30,70],[45,100]],corrida50:[[6.5,100],[8,70],[9.5,40],[11,0]],corrida12:[[1600,0],[2200,40],[2600,70],[3000,100]]},
+        F:{flexao:[[0,0],[5,40],[12,70],[20,100]],abdominal:[[0,0],[12,40],[25,70],[40,100]],corrida50:[[7.5,100],[9,70],[10.5,40],[12,0]],corrida12:[[1400,0],[1900,40],[2300,70],[2700,100]]}};
+var perfil='M';
+function interp(a,x){a=a.slice().sort(function(p,q){return p[0]-q[0]});if(x<=a[0][0])return a[0][1];if(x>=a[a.length-1][0])return a[a.length-1][1];
+  for(var i=0;i<a.length-1;i++){if(x>=a[i][0]&&x<=a[i+1][0])return Math.round(a[i][1]+(a[i+1][1]-a[i][1])*(x-a[i][0])/(a[i+1][0]-a[i][0]))}return 0}
+function taf(){
+  var tot=0,zero=false,ok=true;
+  ['flexao','abdominal','corrida50','corrida12'].forEach(function(k){var v=$('[data-taf="'+k+'"]').value,p=0;
+    if(v===''||isNaN(parseFloat(v)))ok=false;else{p=interp(TB[perfil][k],parseFloat(v));if(p===0)zero=true}
+    $('#pt-'+k).textContent=p;tot+=p});
+  $('#taf-total').textContent=tot;var s=$('#taf-sit');
+  if(!ok){s.textContent='PREENCHA TODOS OS TESTES';s.className='warn'}
+  else if(zero){s.textContent='REPROVADO - ZEROU UM TESTE';s.className='bad-t'}
+  else if(tot>=200){s.textContent='APROVADO';s.className='ok'}
+  else{s.textContent='ALERTA TÁTICO - ABAIXO DE 200 PTS';s.className='bad-t'}
+}
+$$('[data-taf]').forEach(function(i){i.addEventListener('input',taf)});
+$$('[data-perfil]').forEach(function(b){b.addEventListener('click',function(){perfil=b.dataset.perfil;$$('[data-perfil]').forEach(function(x){x.classList.toggle('pri',x===b)});taf()})});
+
+/* Redação */
+var g='';for(var i=1;i<=30;i++)g+='<div>'+i+'</div>';$('#red-gut').innerHTML=g;
+function redacao(){var ta=$('#red-txt');LS.set('bt_red',ta.value);
+  var n=ta.value.trim()?ta.value.split('\n').reduce(function(t,l){return t+(l.trim()?Math.ceil(l.length/70):0)},0):0;
+  $$('#red-gut div').forEach(function(d,i){d.classList.toggle('on',i<n)});
+  var m=$('#red-msg');
+  if(n===0){m.textContent='Comece a escrever.';m.className='warn'}
+  else if(n<8){m.textContent='RISCO DE ZERA POR TEXTO INSUFICIENTE (< 8 linhas).';m.className='bad-t'}
+  else if(n<15){m.textContent='ALERTA DE POUCAS LINHAS (< 15). Meta: 20 a 30.';m.className='warn'}
+  else if(n<20){m.textContent='Quase lá: chegue a 20 linhas.';m.className='warn'}
+  else if(n<=30){m.textContent='Meta atingida (20-30 linhas).';m.className='ok'}
+  else{m.textContent='Acima de 30 linhas: excedente pode ser desconsiderado.';m.className='warn'}
+  $('#red-cnt').textContent=n+' linha(s)';$('#red-bar').style.width=Math.min(100,n/30*100)+'%'}
+$('#red-txt').value=LS.get('bt_red','');$('#red-txt').addEventListener('input',redacao);redacao();
+
+/* PodClass */
+$('#pod-vel').addEventListener('input',function(){$('#pod-vel-v').textContent=parseFloat(this.value).toFixed(1)+'x'});
+$('#pod-play').addEventListener('click',function(){
+  if(!('speechSynthesis' in window)||!$('#pod-txt').value.trim())return;
+  speechSynthesis.cancel();var u=new SpeechSynthesisUtterance($('#pod-txt').value);u.lang='pt-BR';u.rate=parseFloat($('#pod-vel').value);speechSynthesis.speak(u)});
+$('#pod-stop').addEventListener('click',function(){if('speechSynthesis' in window)speechSynthesis.cancel()});
+
+/* Notas / Astra */
+var nt=$('#notas');nt.value=LS.get('bt_notas','');
+nt.addEventListener('input',function(){LS.set('bt_notas',nt.value);$('#notas-st').textContent='Salvo '+new Date().toLocaleTimeString('pt-BR')});
+var ao=$('#astra-obj');ao.value=LS.get('bt_astra','');ao.addEventListener('input',function(){LS.set('bt_astra',ao.value)});
+})();
+</script>
+</body>
+</html>
