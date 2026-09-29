@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>PMESP &amp; Prova Paulista | Daniel &amp; Camilly</title>
+<style>
+:root{
+  --bg:#0a0a0c; --oled:#000000; --surface:#121215; --surface2:#1a1a1f; --line:#26262d;
+  --neon:#CCFF00; --neon-dim:rgba(204,255,0,.14); --text:#ececf0; --muted:#8b8b96;
+  --ok:#3ddc84; --bad:#ff4d4d; --warn:#ffb020;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.5}
+body{padding-bottom:env(safe-area-inset-bottom,0)}
+body.focus,body.modal-open{overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font:inherit;color:var(--text);background:var(--oled);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--neon);outline-offset:1px}
+textarea{resize:vertical}
+
+/* ===== HEADER ULTRA COMPACTO (42px, linha única) ===== */
+header{position:sticky;top:0;z-index:50;height:42px;box-sizing:content-box;padding:env(safe-area-inset-top,0) 10px 0;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--oled);border-bottom:1px solid var(--neon);white-space:nowrap;overflow:hidden}
+.brand{font-weight:800;letter-spacing:.06em;font-size:13px;color:var(--neon);flex:0 0 auto}
+.brand span{color:var(--text);font-weight:600}
+#studentName{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;flex:1 1 auto;text-align:center;padding:4px}
+.status{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--neon);display:flex;align-items:center;gap:5px;flex:0 0 auto}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--neon);box-shadow:0 0 8px var(--neon);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35}}
+
+/* ===== ABAS ROLÁVEIS ===== */
+nav{position:sticky;top:calc(42px + env(safe-area-inset-top,0px));z-index:40;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding:8px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;padding:8px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;color:var(--muted);white-space:nowrap}
+nav button.active{background:var(--neon);color:#000;font-weight:700;border-color:var(--neon)}
+
+main{max-width:820px;margin:0 auto;padding:14px 12px 80px}
+section.tab{display:none}
+section.tab.active{display:block}
+h2{font-size:18px;margin-bottom:4px;color:var(--neon)}
+h3{font-size:15px;margin-bottom:6px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.card.neon{border-color:var(--neon);box-shadow:0 0 0 1px var(--neon-dim) inset}
+.card.ok{border-color:var(--ok)}
+.card.bad{border-color:var(--bad)}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1 1 140px}
+.btn{padding:11px 14px;border-radius:10px;background:var(--surface2);border:1px solid var(--line);font-weight:600;font-size:14px;text-align:center}
+.btn.primary{background:var(--neon);color:#000;border-color:var(--neon);font-weight:800}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn.sel{background:var(--neon-dim);border-color:var(--neon);color:var(--neon)}
+.btn.sm{padding:6px 10px;font-size:12px}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn:active{transform:scale(.98)}
+.full{width:100%}
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+.tag{display:inline-block;font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:999px;border:1px solid var(--neon);color:var(--neon);margin-right:4px}
+.note{font-size:12px;color:var(--muted);border-left:2px solid var(--warn);padding-left:8px;margin-top:8px}
+.counter{font-family:var(--mono);font-size:12px;color:var(--muted)}
+ul.clean{list-style:none}
+ul.clean li{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+ul.clean li:last-child{border:none}
+.bar{height:8px;background:var(--oled);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--neon);width:0;transition:width .3s}
+.steps{counter-reset:s;list-style:none}
+.steps li{counter-increment:s;padding:8px 0 8px 34px;position:relative;border-bottom:1px solid var(--line);font-size:14px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:8px;width:24px;height:24px;border-radius:50%;background:var(--neon);color:#000;font-weight:800;font-size:12px;display:grid;place-items:center}
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;padding:0 14px}
+summary{padding:12px 0;font-weight:600;cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";float:right;color:var(--neon)}
+details[open] summary::after{content:"–"}
+details .in{padding-bottom:12px;font-size:14px;color:#cfcfd6}
+.big{font-family:var(--mono);font-size:44px;font-weight:800;color:var(--neon);text-align:center;letter-spacing:.04em;line-height:1.2}
+.chk{display:flex;gap:10px;align-items:flex-start;color:var(--text);font-size:14px;margin:0;cursor:pointer}
+.chk input{width:auto;margin-top:3px;accent-color:var(--neon)}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px}
+.kpi .card{margin:0;text-align:center}
+.kpi .n{font-family:var(--mono);font-size:30px;font-weight:800;color:var(--neon);line-height:1.2}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;margin:3px 3px 0 0;font-weight:600}
+.pill.g{background:rgba(61,220,132,.12);color:var(--ok);border:1px solid var(--ok)}
+.pill.r{background:rgba(255,77,77,.1);color:var(--bad);border:1px solid var(--bad)}
+.pill.y{background:rgba(255,176,32,.1);color:var(--warn);border:1px solid var(--warn)}
+.hidden{display:none!important}
+
+/* ===== QUESTÕES ===== */
+.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.q .meta{font-size:11px;font-family:var(--mono);color:var(--neon);margin-bottom:6px}
+.q p.t{font-weight:600;margin-bottom:10px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:11px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;font-size:14px;background:var(--oled);color:var(--text)}
+.opt.ok{border-color:var(--ok);background:rgba(61,220,132,.08)}
+.opt.bad{border-color:var(--bad);background:rgba(255,77,77,.08)}
+.opt.picked{border-color:var(--neon);background:var(--neon-dim)}
+.expl{font-size:13px;color:var(--muted);margin-top:8px;display:none}
+.expl.show{display:block}
+
+/* ===== FLASHCARD ===== */
+.fcard{min-height:200px;border:1px solid var(--neon);border-radius:14px;background:var(--surface);padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;margin-bottom:12px}
+.fcard .face{font-weight:600;font-size:16px}
+.fcard .ans{color:var(--text);font-size:15px;border-top:1px dashed var(--line);padding-top:10px;font-weight:400}
+.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.grades .btn{padding:9px 4px;font-size:12px}
+.grades small{display:block;font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:400}
+
+/* ===== REDAÇÃO ===== */
+#redGutter{display:flex;flex-wrap:wrap;gap:3px;margin:8px 0}
+#redGutter span{width:24px;height:20px;border-radius:4px;border:1px solid var(--line);font-family:var(--mono);font-size:10px;display:grid;place-items:center;color:var(--muted)}
+#redGutter span.used{background:var(--neon-dim);border-color:var(--neon);color:var(--neon)}
+#redGutter span.min{border-style:dashed}
+#redAviso{font-size:13px;padding:8px 10px;border-radius:8px;margin-top:8px;display:none}
+#redAviso.show{display:block}
+#redAviso.al-bad{background:rgba(255,77,77,.1);border:1px solid var(--bad);color:var(--bad)}
+#redAviso.al-warn{background:rgba(255,176,32,.1);border:1px solid var(--warn);color:var(--warn)}
+#redAviso.al-ok{background:rgba(61,220,132,.1);border:1px solid var(--ok);color:var(--ok)}
+
+/* ===== EVOLUÇÃO (ASTRA) ===== */
+.evo{display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:8px}
+.evo div{flex:1;background:var(--neon);border-radius:4px 4px 0 0;min-height:4px;position:relative}
+.evo div span{position:absolute;top:-16px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:10px;color:var(--muted)}
+
+/* ===== MODAIS ===== */
+.modal{position:fixed;inset:0;z-index:1000;background:var(--oled);display:none;flex-direction:column;overflow:hidden}
+.modal.open{display:flex}
+.modal .mhead{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--neon)}
+.modal .mbody{flex:1 1 auto;overflow-y:auto;padding:14px 12px calc(40px + env(safe-area-inset-bottom,0px));max-width:820px;width:100%;margin:0 auto;-webkit-overflow-scrolling:touch}
+.timer{font-family:var(--mono);font-size:28px;font-weight:800;color:var(--neon)}
+.timer.low{color:var(--bad);animation:pulse 1s infinite}
+body.focus header,body.focus nav,body.focus main,body.focus #pomoFloat{display:none!important}
+.palette{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px;margin:12px 0}
+.palette button{height:38px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:13px;position:relative}
+.palette button.ans{background:var(--neon-dim);border-color:var(--neon);color:var(--neon)}
+.palette button.cur{background:var(--neon);color:#000;border-color:var(--neon);font-weight:800}
+.palette button.mk::after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--warn)}
+#dlg{position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px}
+#dlg.open{display:flex}
+#dlg .box{background:var(--surface);border:1px solid var(--neon);border-radius:14px;padding:16px;width:100%;max-width:420px}
+#pomoFloat{position:fixed;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:45;background:var(--oled);border:1px solid var(--neon);color:var(--neon);font-family:var(--mono);font-weight:800;padding:8px 14px;border-radius:999px;display:none;box-shadow:0 0 14px rgba(204,255,0,.25)}
+#pomoFloat.show{display:block}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:3000;background:var(--neon);color:#000;font-weight:700;font-size:13px;padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">PMESP<span> · PP</span></div>
+  <button id="studentName" data-act="cadastro" title="Editar nome do aluno"></button>
+  <div class="status"><i class="dot"></i>OPERACIONAL</div>
+</header>
+
+<nav id="tabs" aria-label="Navegação principal">
+  <button class="active" data-tab="guia">🎯 Guia PMESP</button>
+  <button data-tab="edital">📋 Edital Verticalizado</button>
+  <button data-tab="astra">⚡ Modo Astra (Diagnóstico)</button>
+  <button data-tab="aph">🚨 Incêndio/APH</button>
+  <button data-tab="taf">🏃 Calculadora TAF PMESP</button>
+  <button data-tab="redacao">✍️ Redação Vunesp</button>
+  <button data-tab="banco">📝 Banco de Questões</button>
+  <button data-tab="pod">🎧 PodClass</button>
+  <button data-tab="flash">🃏 Flashcards Anki</button>
+  <button data-tab="pomo">⏱️ Pomodoro &amp; Notas</button>
+</nav>
+
+<main>
+
+<!-- ===== 1. GUIA ===== -->
+<section class="tab active" id="guia">
+  <h2>🎯 Guia PMESP</h2>
+  <p class="sub">Mapa da missão: etapas típicas do concurso de Soldado PM de 2ª Classe.</p>
+  <div class="kpi">
+    <div class="card"><div class="n" id="gEdital">0%</div><div class="counter">Edital concluído</div></div>
+    <div class="card"><div class="n" id="gDue">0</div><div class="counter">Cartões vencidos</div></div>
+    <div class="card"><div class="n" id="gLast">--</div><div class="counter">Último simulado</div></div>
+  </div>
+  <div class="card neon">
+    <h3>Contagem regressiva</h3>
+    <label for="examDate">Data da prova objetiva</label>
+    <input type="date" id="examDate">
+    <div class="big" id="countdown">--</div>
+    <p class="sub" style="text-align:center;margin:0">dias para a prova</p>
+  </div>
+  <div class="card">
+    <h3>Etapas do certame</h3>
+    <ol class="steps">
+      <li><b>Inscrição</b> e pagamento da taxa dentro do prazo do edital.</li>
+      <li><b>Prova objetiva</b> (Vunesp): múltipla escolha, com eliminação por nota mínima.</li>
+      <li><b>Redação</b> dissertativa, corrigida para os candidatos classificados.</li>
+      <li><b>Exame de saúde</b> e <b>teste de aptidão física (TAF)</b>.</li>
+      <li><b>Investigação social</b> e <b>avaliação psicológica</b>.</li>
+      <li><b>Curso de formação</b> e nomeação.</li>
+    </ol>
+    <p class="note">A ordem, os pesos e os critérios variam a cada edital. Confirme sempre no edital vigente e no site da banca.</p>
+  </div>
+  <div class="card">
+    <h3>Rotina tática sugerida</h3>
+    <ul class="clean">
+      <li>🔁 Diário: 2 blocos Pomodoro de teoria, 20 questões e revisão dos cartões vencidos.</li>
+      <li>📆 Semanal: 1 simulado no Modo Foco e diagnóstico no Modo Astra.</li>
+      <li>✍️ Semanal: 1 redação completa, conferindo o número de linhas.</li>
+      <li>🏃 3x por semana: treino físico conforme o TAF.</li>
+    </ul>
+  </div>
+  <button class="btn primary full" data-act="openFocus">🎯 Iniciar Simulado (Modo Foco)</button>
+</section>
+
+<!-- ===== 2. EDITAL ===== -->
+<section class="tab" id="edital">
+  <h2>📋 Edital Verticalizado</h2>
+  <p class="sub">Marque os tópicos concluídos. O progresso fica salvo neste aparelho.</p>
+  <div class="card neon">
+    <div style="display:flex;justify-content:space-between"><b>Progresso geral</b><span class="counter" id="edPct">0%</span></div>
+    <div class="bar" style="margin-top:8px"><i id="edBar"></i></div>
+  </div>
+  <div id="edList"></div>
+  <p class="note">Estrutura baseada nas matérias comuns ao concurso. Complemente com os tópicos do edital vigente.</p>
+</section>
+
+<!-- ===== 3. ASTRA ===== -->
+<section class="tab" id="astra">
+  <h2>⚡ Modo Astra (Diagnóstico)</h2>
+  <p class="sub">Análise tática pós-simulado: pontos fortes, pontos fracos e Plano de Redenção.</p>
+  <div id="astraSummary" class="card"></div>
+  <div class="row">
+    <button class="btn primary" data-act="openFocus">🎯 Novo Simulado</button>
+    <button class="btn" data-act="astraLast">📊 Abrir último diagnóstico</button>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h3>Evolução (últimos simulados)</h3>
+    <div id="astraEvo"></div>
+  </div>
+  <div class="card">
+    <h3>Histórico</h3>
+    <ul class="clean" id="astraHist"></ul>
+  </div>
+</section>
+
+<!-- ===== 4. APH ===== -->
+<section class="tab" id="aph">
+  <h2>🚨 Incêndio / APH</h2>
+  <p class="sub">Resumos de revisão rápida. Estudo teórico não substitui treinamento prático.</p>
+  <details open><summary>🩺 Avaliação primária: XABCDE</summary><div class="in"><ul class="clean">
+    <li><b>X</b> – Hemorragia exsanguinante: controlar com compressão direta ou torniquete.</li>
+    <li><b>A</b> – Vias aéreas com proteção da coluna cervical.</li>
+    <li><b>B</b> – Respiração e ventilação.</li>
+    <li><b>C</b> – Circulação e controle de sangramentos.</li>
+    <li><b>D</b> – Disfunção neurológica (nível de consciência, pupilas).</li>
+    <li><b>E</b> – Exposição e controle da hipotermia.</li>
+  </ul></div></details>
+  <details><summary>❤️ RCP em adultos</summary><div class="in"><ul class="clean">
+    <li>Verifique a segurança da cena, a responsividade e a respiração.</li>
+    <li>Acione o serviço de emergência e peça o DEA.</li>
+    <li>Compressões: 100 a 120 por minuto, 5 a 6 cm de profundidade, com retorno total do tórax.</li>
+    <li>Relação 30 compressões : 2 ventilações, quando houver ventilação.</li>
+    <li>Use o DEA assim que disponível e siga as instruções do aparelho.</li>
+  </ul></div></details>
+  <details><summary>🔥 Classes de incêndio</summary><div class="in"><ul class="clean">
+    <li><b>Classe A</b> – sólidos comuns (madeira, papel, tecido).</li>
+    <li><b>Classe B</b> – líquidos inflamáveis e gases.</li>
+    <li><b>Classe C</b> – equipamentos elétricos energizados.</li>
+    <li><b>Classe D</b> – metais combustíveis (magnésio, sódio).</li>
+    <li><b>Classe K</b> – óleos e gorduras de cozinha.</li>
+  </ul></div></details>
+  <details><summary>🧯 Triângulo e tetraedro do fogo</summary><div class="in">
+    <p>O triângulo tem <b>combustível, comburente e calor</b>. O tetraedro acrescenta a <b>reação em cadeia</b>. Métodos de extinção: <b>retirada do material, abafamento, resfriamento e quebra da reação em cadeia</b>.</p>
+  </div></details>
+  <details><summary>⚠️ Queimaduras</summary><div class="in"><ul class="clean">
+    <li>Interrompa a causa e resfrie a área com água corrente em temperatura ambiente.</li>
+    <li>Retire anéis e roupas não aderidas e cubra com pano limpo e seco.</li>
+    <li>Não estoure bolhas e não aplique pomadas, pasta de dente ou gelo.</li>
+  </ul></div></details>
+</section>
+
+<!-- ===== 5. TAF ===== -->
+<section class="tab" id="taf">
+  <h2>🏃 Calculadora TAF PMESP</h2>
+  <p class="sub">Escolha o perfil, informe os índices mínimos do edital e compare com o seu desempenho.</p>
+  <div class="row" style="margin-bottom:12px">
+    <button class="btn" id="tafM" data-act="tafPerfil" data-arg="masc">Masculino</button>
+    <button class="btn" id="tafF" data-act="tafPerfil" data-arg="fem">Feminino</button>
+  </div>
+  <div class="card">
+    <h3>1. Índices mínimos (editáveis)</h3>
+    <div class="row" id="tafMin"></div>
+    <p class="note">Valores ilustrativos. Cada edital define índices por sexo e faixa etária. Substitua pelos números oficiais.</p>
+  </div>
+  <div class="card neon">
+    <h3>2. Seu desempenho</h3>
+    <div class="row" id="tafVal"></div>
+    <div id="tafOut" style="margin-top:12px"></div>
+    <button class="btn full" style="margin-top:8px" data-act="tafReset">Limpar meu desempenho</button>
+  </div>
+</section>
+
+<!-- ===== 6. REDAÇÃO ===== -->
+<section class="tab" id="redacao">
+  <h2>✍️ Redação Vunesp</h2>
+  <p class="sub">Escreva e acompanhe a extensão em linhas de folha manuscrita. Confira o limite exigido no edital.</p>
+  <div class="card">
+    <label for="tema">Tema para treino</label>
+    <select id="tema"></select>
+    <label for="redTxt" style="margin-top:10px">Seu texto</label>
+    <textarea id="redTxt" rows="14" placeholder="Escreva sua dissertação-argumentativa aqui..."></textarea>
+    <div id="redInfo" class="counter" style="margin-top:8px"></div>
+    <div class="bar" style="margin-top:6px"><i id="redBar"></i></div>
+    <div id="redGutter"></div>
+    <div id="redAviso"></div>
+    <button class="btn full" style="margin-top:10px" data-act="redLimpar">Limpar texto</button>
+  </div>
+  <details>
+    <summary>⚙️ Ajustes da folha</summary>
+    <div class="in">
+      <div class="row">
+        <div><label for="cfgMin">Mínimo de linhas</label><input type="number" id="cfgMin" min="1"></div>
+        <div><label for="cfgMax">Máximo de linhas</label><input type="number" id="cfgMax" min="1"></div>
+        <div><label for="cfgCpl">Caracteres por linha</label><input type="number" id="cfgCpl" min="20"></div>
+      </div>
+      <p class="note">Valores padrão de 20 a 30 linhas e 80 caracteres por linha. Ajuste conforme o edital e a sua letra.</p>
+    </div>
+  </details>
+  <div class="card">
+    <h3>Checklist de correção</h3>
+    <ul class="clean">
+      <li><label class="chk"><input type="checkbox"> Tema e tipo textual: dissertação-argumentativa.</label></li>
+      <li><label class="chk"><input type="checkbox"> Coerência e coesão: conectivos e progressão de ideias.</label></li>
+      <li><label class="chk"><input type="checkbox"> Norma-padrão: ortografia, pontuação e concordância.</label></li>
+      <li><label class="chk"><input type="checkbox"> Estrutura: introdução, desenvolvimento e conclusão.</label></li>
+      <li><label class="chk"><input type="checkbox"> Letra legível e respeito ao limite de linhas.</label></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 7. BANCO ===== -->
+<section class="tab" id="banco">
+  <h2>📝 Banco de Questões</h2>
+  <p class="sub">Responda e veja o gabarito comentado na hora.</p>
+  <div class="card">
+    <label for="filtroMat">Filtrar por matéria</label>
+    <select id="filtroMat"></select>
+  </div>
+  <div id="bancoList"></div>
+</section>
+
+<!-- ===== 8. PODCLASS ===== -->
+<section class="tab" id="pod">
+  <h2>🎧 PodClass</h2>
+  <p class="sub">Mini-aulas em áudio com a voz do seu aparelho. Ideal para revisar no trajeto.</p>
+  <div class="card">
+    <label for="podRate">Velocidade</label>
+    <select id="podRate">
+      <option value="0.85">Lenta (0,85x)</option>
+      <option value="1" selected>Normal (1x)</option>
+      <option value="1.2">Rápida (1,2x)</option>
+      <option value="1.5">Muito rápida (1,5x)</option>
+    </select>
+  </div>
+  <div id="podList"></div>
+  <div class="row">
+    <button class="btn" data-act="podPause">⏯ Pausar / Continuar</button>
+    <button class="btn danger" data-act="podStop">⏹ Parar áudio</button>
+  </div>
+  <p class="note" id="podNote" style="display:none"></p>
+</section>
+
+<!-- ===== 9. FLASHCARDS ===== -->
+<section class="tab" id="flash">
+  <h2>🃏 Flashcards Anki</h2>
+  <p class="sub">Repetição espaçada. Os erros dos simulados entram automaticamente no Caderno de Erros.</p>
+  <div id="fcArea"></div>
+</section>
+
+<!-- ===== 10. POMODORO ===== -->
+<section class="tab" id="pomo">
+  <h2>⏱️ Pomodoro &amp; Notas</h2>
+  <div class="card neon">
+    <div class="big" id="pomoTime">25:00</div>
+    <p class="sub" style="text-align:center" id="pomoMode">Foco</p>
+    <div class="row">
+      <button class="btn primary" id="pomoBtn" data-act="pomoToggle">▶ Iniciar</button>
+      <button class="btn" data-act="pomoReset">↺ Zerar</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" data-act="pomoSet" data-arg="25:Foco">Foco 25</button>
+      <button class="btn" data-act="pomoSet" data-arg="5:Pausa curta">Pausa 5</button>
+      <button class="btn" data-act="pomoSet" data-arg="15:Pausa longa">Pausa 15</button>
+    </div>
+    <p class="counter" style="text-align:center;margin-top:10px">Ciclos de foco concluídos hoje: <b id="pomoCount">0</b></p>
+  </div>
+  <div class="card">
+    <h3>📓 Bloco de Notas</h3>
+    <textarea id="notes" rows="10" placeholder="Anote macetes, erros recorrentes e dúvidas..."></textarea>
+    <p class="counter" style="margin-top:6px">Salvo automaticamente neste aparelho.</p>
+  </div>
+</section>
+
+</main>
+
+<button id="pomoFloat" data-tab="pomo" aria-label="Voltar ao Pomodoro">25:00</button>
+
+<!-- ===== MODAL: MODO FOCO ===== -->
+<div class="modal" id="focusModal" role="dialog" aria-modal="true" aria-label="Modo Foco">
+  <div class="mhead">
+    <div class="timer" id="fTimer">45:00</div>
+    <button class="btn danger" data-act="exitFocus">❌ Sair do Modo Foco</button>
+  </div>
+  <div class="mbody" id="fBody">
+    <div id="fSetup">
+      <h2>Simulado</h2>
+      <p class="sub">Escolha o bloco e o tempo. Ao iniciar, todo o restante do site fica oculto.</p>
+      <div class="card">
+        <h3>Bloco</h3>
+        <div class="row">
+          <button class="btn" id="bVun" data-act="pickSim" data-arg="vunesp">📘 Vunesp (PMESP)</button>
+          <button class="btn" id="bPP" data-act="pickSim" data-arg="paulista">📗 Prova Paulista</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Tempo</h3>
+        <div class="row">
+          <button class="btn" data-min="25" data-act="pickTime" data-arg="25">[25 Min]</button>
+          <button class="btn" data-min="45" data-act="pickTime" data-arg="45">[45 Min]</button>
+          <button class="btn" data-min="50" data-act="pickTime" data-arg="50">[50 Min]</button>
+        </div>
+      </div>
+      <button class="btn primary full" data-act="startSim">▶ Iniciar Simulado</button>
+    </div>
+    <div id="fExam" class="hidden"></div>
+  </div>
+</div>
+
+<!-- ===== MODAL: MODO ASTRA ===== -->
+<div class="modal" id="astraModal" role="dialog" aria-modal="true" aria-label="Modo Astra">
+  <div class="mhead">
+    <b style="color:var(--neon)">⚡ MODO ASTRA · Diagnóstico Tático</b>
+    <button class="btn" data-act="closeAstra">Fechar</button>
+  </div>
+  <div class="mbody" id="astraBody"></div>
+</div>
+
+<div id="dlg"><div class="box" id="dlgBox"></div></div>
+<div id="toast" role="status"></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   UTILIDADES
+   ===================================================================== */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DAY=86400000, LET='ABCDE';
+const store={
+  get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+const KEY={nome:'pp_nome',prova:'pp_prova',edital:'pp_edital',hist:'pp_hist',cad:'pp_cad',taf:'pp_taf',
+  red:'pp_red',redCfg:'pp_redcfg',tema:'pp_tema',notes:'pp_notes',pomoDay:'pp_pomoday'};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2600)}
+function beep(){try{const A=window.AudioContext||window.webkitAudioContext,c=new A(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.value=.15;o.start();o.stop(c.currentTime+.35);setTimeout(()=>c.close(),700)}catch(e){}}
+function buzz(){try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}}
+const nome=()=>store.get(KEY.nome,'Daniel & Camilly');
+function atualizarStatus(){$('#studentName').textContent=nome()}
+
+/* =====================================================================
+   NAVEGAÇÃO
+   ===================================================================== */
+let tabAtual='guia';
+function showTab(id){
+  tabAtual=id;
+  $$('#tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+  $$('section.tab').forEach(s=>s.classList.toggle('active',s.id===id));
+  const b=$('#tabs button.active');if(b)b.scrollIntoView({inline:'center',block:'nearest'});
+  window.scrollTo(0,0);
+  if(id==='guia')renderGuia();
+  if(id==='astra')renderAstraTab();
+  if(id==='flash')renderCaderno();
+  updPomoFloat();
+}
+
+/* =====================================================================
+   BANCO DE QUESTÕES
+   ===================================================================== */
+const QUESTIONS=[
+ // ---------- VUNESP / PMESP ----------
+ {id:1,set:'vunesp',m:'Português',t:'Assinale a alternativa em que a concordância verbal está correta.',o:['Fazem dois anos que ele saiu.','Houveram muitos problemas na ocorrência.','Faz dois anos que ele saiu.','Existe muitos candidatos inscritos.'],a:2,e:'"Fazer" indicando tempo decorrido é impessoal e fica na 3ª pessoa do singular. "Haver" no sentido de existir também é impessoal, e "existir" concorda com o sujeito plural.'},
+ {id:2,set:'vunesp',m:'Português',t:'Assinale a alternativa correta quanto ao uso do sinal indicativo de crase.',o:['Fui à pé até a base.','Refiro-me àquela ocorrência.','Começou a estudar à partir de hoje.','Entregou o relatório à ele.'],a:1,e:'"a" (preposição exigida por "referir-se") + "aquela" (pronome demonstrativo) = "àquela". Não há crase antes de palavra masculina, de verbo ou de pronome pessoal.'},
+ {id:3,set:'vunesp',m:'Português',t:'Assinale a alternativa correta quanto à regência verbal.',o:['Aspirava o cargo de sargento.','Os candidatos assistiram à palestra.','O policial chegou na base cedo.','Prefiro mais estudar do que dormir.'],a:1,e:'"Assistir" no sentido de presenciar exige a preposição "a". "Aspirar" (desejar) pede "ao cargo", "chegar" pede "à base", e "preferir" não admite "mais... do que".'},
+ {id:4,set:'vunesp',m:'Português',t:'Assinale a alternativa em que a vírgula está empregada corretamente.',o:['O soldado, entregou o relatório.','Ontem, o soldado entregou o relatório.','O soldado entregou, o relatório ao capitão.','Os candidatos que estudam, passam.'],a:1,e:'O adjunto adverbial deslocado ("Ontem") pode ser isolado por vírgula. Nas demais, a vírgula separa termos que não podem ser separados (sujeito do verbo, verbo do objeto).'},
+ {id:5,set:'vunesp',m:'Português',t:'Segundo a Constituição, a segurança pública é dever do Estado, mas também direito e responsabilidade de todos. Depreende-se que:',o:['Apenas as polícias respondem pela segurança pública.','A sociedade não tem qualquer papel na segurança pública.','A segurança pública envolve o Estado e também a sociedade.','A segurança pública é responsabilidade exclusiva do cidadão.'],a:2,e:'O texto atribui o dever ao Estado e a responsabilidade a todos, ou seja, o Estado e a sociedade participam.'},
+ {id:6,set:'vunesp',m:'Matemática',t:'Uma viatura percorre 180 km em 2 horas e 30 minutos. Qual é a velocidade média?',o:['60 km/h','72 km/h','80 km/h','90 km/h'],a:1,e:'2h30 = 2,5 h. 180 ÷ 2,5 = 72 km/h.'},
+ {id:7,set:'vunesp',m:'Matemática',t:'Quanto é 20% de 350?',o:['60','65','70','75'],a:2,e:'20% = 0,20. 0,20 × 350 = 70.'},
+ {id:8,set:'vunesp',m:'Matemática',t:'Quatro policiais completam uma ronda em 6 horas. Mantido o ritmo, em quanto tempo seis policiais completam a mesma ronda?',o:['3 horas','4 horas','5 horas','9 horas'],a:1,e:'Grandezas inversamente proporcionais: 4 × 6 = 6 × x, logo x = 4 horas.'},
+ {id:9,set:'vunesp',m:'Matemática',t:'As notas de um candidato em quatro simulados foram 6, 7, 8 e 9. Qual é a média?',o:['7,0','7,5','8,0','7,8'],a:1,e:'(6 + 7 + 8 + 9) ÷ 4 = 30 ÷ 4 = 7,5.'},
+ {id:10,set:'vunesp',m:'Matemática',t:'Um capital de R$ 1.000,00 é aplicado a juros simples de 2% ao mês por 5 meses. Os juros obtidos são de:',o:['R$ 50,00','R$ 100,00','R$ 102,00','R$ 110,00'],a:1,e:'J = C · i · t = 1.000 × 0,02 × 5 = R$ 100,00.'},
+ {id:11,set:'vunesp',m:'Raciocínio Lógico',t:'A negação da proposição "Todo policial é corajoso" é:',o:['Nenhum policial é corajoso.','Algum policial não é corajoso.','Todo policial não é corajoso.','Algum policial é corajoso.'],a:1,e:'A negação de "Todo A é B" é "Existe A que não é B", isto é, "Algum policial não é corajoso".'},
+ {id:12,set:'vunesp',m:'Raciocínio Lógico',t:'Na sequência 2, 6, 18, 54, ..., qual é o próximo termo?',o:['108','126','162','216'],a:2,e:'Cada termo é o anterior multiplicado por 3. 54 × 3 = 162.'},
+ {id:13,set:'vunesp',m:'Raciocínio Lógico',t:'Considere verdadeiras as premissas "Se chove, então a rua fica molhada" e "A rua não está molhada". Logo, conclui-se que:',o:['Choveu.','Não choveu.','A rua secou.','Pode ter chovido ou não.'],a:1,e:'Pela contrapositiva (modus tollens): se a consequência é falsa, o antecedente também é falso. Logo, não choveu.'},
+ {id:14,set:'vunesp',m:'Raciocínio Lógico',t:'De quantas maneiras diferentes 3 policiais podem ser dispostos em uma fila?',o:['3','6','9','12'],a:1,e:'Permutação simples: 3! = 3 × 2 × 1 = 6.'},
+ {id:15,set:'vunesp',m:'Dir. Constitucional',t:'Segundo o art. 144 da CF/88, às polícias militares cabem:',o:['A polícia judiciária e a apuração de infrações penais.','A polícia ostensiva e a preservação da ordem pública.','A polícia marítima, aeroportuária e de fronteiras.','O patrulhamento ostensivo das rodovias federais.'],a:1,e:'§ 5º do art. 144: às polícias militares cabem a polícia ostensiva e a preservação da ordem pública.'},
+ {id:16,set:'vunesp',m:'Dir. Constitucional',t:'Pela CF/88, a casa é asilo inviolável. Sem consentimento do morador, ela pode ser adentrada a qualquer hora em caso de:',o:['Cumprimento de mandado judicial durante a noite.','Flagrante delito, desastre ou para prestar socorro.','Suspeita genérica de prática criminosa.','Ordem verbal de superior hierárquico.'],a:1,e:'Art. 5º, XI: flagrante delito, desastre ou prestar socorro a qualquer hora. Ordem judicial só durante o dia.'},
+ {id:17,set:'vunesp',m:'Dir. Constitucional',t:'Segundo o art. 5º da CF/88, entre as penas abaixo, uma é vedada. Assinale-a.',o:['Multa','Prestação social alternativa','De caráter perpétuo','Suspensão ou interdição de direitos'],a:2,e:'Art. 5º, XLVII: não haverá penas de caráter perpétuo. Multa, prestação social alternativa e suspensão de direitos estão entre as penas admitidas (art. 5º, XLVI).'},
+ {id:18,set:'vunesp',m:'Direitos Humanos',t:'A Declaração Universal dos Direitos Humanos foi proclamada pela ONU em:',o:['1945','1948','1966','1988'],a:1,e:'A DUDH foi adotada pela Assembleia Geral da ONU em 10 de dezembro de 1948.'},
+ {id:19,set:'vunesp',m:'Direitos Humanos',t:'São princípios que orientam o uso da força pelos agentes de segurança pública, EXCETO:',o:['Legalidade','Necessidade','Proporcionalidade','Conveniência'],a:3,e:'Os princípios são legalidade, necessidade e proporcionalidade. Conveniência não é critério para o uso da força.'},
+ {id:20,set:'vunesp',m:'Direito Penal',t:'Não é excludente de ilicitude prevista no Código Penal:',o:['Legítima defesa','Estado de necessidade','Embriaguez voluntária','Estrito cumprimento do dever legal'],a:2,e:'Art. 23 do CP: estado de necessidade, legítima defesa, estrito cumprimento do dever legal e exercício regular de direito. A embriaguez voluntária não exclui a ilicitude.'},
+ // ---------- PROVA PAULISTA ----------
+ {id:21,set:'paulista',m:'Português',t:'Qual palavra é sinônima de "efêmero"?',o:['Duradouro','Passageiro','Antigo','Raro'],a:1,e:'Efêmero é o que dura pouco, ou seja, passageiro.'},
+ {id:22,set:'paulista',m:'Português',t:'Em "Choveu muito ontem", a oração apresenta:',o:['Sujeito simples','Sujeito composto','Oração sem sujeito','Sujeito oculto'],a:2,e:'Verbos que indicam fenômenos da natureza são impessoais, e a oração fica sem sujeito.'},
+ {id:23,set:'paulista',m:'Português',t:'Qual das palavras é proparoxítona?',o:['Médico','Café','Você','Também'],a:0,e:'"Médico" tem a sílaba tônica na antepenúltima sílaba (mé-di-co).'},
+ {id:24,set:'paulista',m:'Português',t:'Qual é o plural correto de "cidadão"?',o:['Cidadões','Cidadãos','Cidadães','Cidadans'],a:1,e:'O plural de "cidadão" é "cidadãos".'},
+ {id:25,set:'paulista',m:'Português',t:'Assinale a alternativa que apresenta um substantivo coletivo.',o:['Multidão','Rapaz','Correr','Belo'],a:0,e:'Substantivo coletivo nomeia um conjunto de seres no singular. "Multidão" é um conjunto de pessoas.'},
+ {id:26,set:'paulista',m:'Português',t:'Assinale a palavra escrita corretamente.',o:['Excessão','Exceção','Exeção','Eceção'],a:1,e:'A grafia correta é "exceção".'},
+ {id:27,set:'paulista',m:'Matemática',t:'Quanto é 2/5 de 100?',o:['20','25','40','50'],a:2,e:'100 ÷ 5 = 20, e 20 × 2 = 40.'},
+ {id:28,set:'paulista',m:'Matemática',t:'Um retângulo mede 9 cm por 5 cm. Qual é a sua área?',o:['28 cm²','45 cm²','14 cm²','54 cm²'],a:1,e:'Área = base × altura = 9 × 5 = 45 cm².'},
+ {id:29,set:'paulista',m:'Matemática',t:'Resolva a equação 3x + 5 = 20.',o:['x = 3','x = 4','x = 5','x = 6'],a:2,e:'3x = 20 − 5 = 15, portanto x = 5.'},
+ {id:30,set:'paulista',m:'Matemática',t:'Qual é o perímetro de um quadrado de lado 7 cm?',o:['14 cm','21 cm','28 cm','49 cm'],a:2,e:'Perímetro = 4 × 7 = 28 cm.'},
+ {id:31,set:'paulista',m:'Matemática',t:'Um produto custa R$ 80,00 e recebe 25% de desconto. O novo preço é:',o:['R$ 55,00','R$ 60,00','R$ 65,00','R$ 75,00'],a:1,e:'Com 25% de desconto paga-se 75%: 0,75 × 80 = R$ 60,00.'},
+ {id:32,set:'paulista',m:'Matemática',t:'Qual é o valor de 3² + 4²?',o:['14','25','49','7'],a:1,e:'3² = 9 e 4² = 16. 9 + 16 = 25.'},
+ {id:33,set:'paulista',m:'Matemática',t:'Quanto é 1/2 + 1/4?',o:['2/6','3/4','1/6','2/4'],a:1,e:'1/2 = 2/4. 2/4 + 1/4 = 3/4.'},
+ {id:34,set:'paulista',m:'Matemática',t:'Qual é o MMC de 4 e 6?',o:['10','12','24','2'],a:1,e:'Múltiplos de 4: 4, 8, 12... Múltiplos de 6: 6, 12... O menor comum é 12.'}
+];
+
+function renderBanco(){
+  const sel=$('#filtroMat'),f=sel.value||'Todas';
+  if(!sel.options.length){
+    const mats=['Todas',...new Set(QUESTIONS.map(q=>q.m))];
+    sel.innerHTML=mats.map(m=>`<option>${esc(m)}</option>`).join('');
+  }
+  const cur=sel.value||'Todas';
+  $('#bancoList').innerHTML=QUESTIONS.filter(q=>cur==='Todas'||q.m===cur).map(q=>`
+    <div class="q" id="bq${q.id}">
+      <div class="meta">${q.set==='vunesp'?'VUNESP':'PROVA PAULISTA'} · ${esc(q.m)}</div>
+      <p class="t">${esc(q.t)}</p>
+      ${q.o.map((o,i)=>`<button class="opt" data-act="bancoResp" data-arg="${q.id}:${i}"><b>${LET[i]})</b><span>${esc(o)}</span></button>`).join('')}
+      <div class="expl">💡 ${esc(q.e)}</div>
+    </div>`).join('');
+}
+
+/* =====================================================================
+   EDITAL VERTICALIZADO
+   ===================================================================== */
+const EDITAL={
+ 'Língua Portuguesa':['Interpretação de texto','Tipologia e gêneros textuais','Ortografia e acentuação','Classes de palavras','Concordância verbal e nominal','Regência e crase','Pontuação','Coesão e coerência'],
+ 'Matemática':['Operações e problemas','Frações e decimais','Razão, proporção e regra de três','Porcentagem','Geometria plana','Equações do 1º e 2º graus','Estatística básica'],
+ 'Raciocínio Lógico':['Proposições e conectivos','Negação de proposições','Silogismos e diagramas','Sequências','Análise combinatória e probabilidade'],
+ 'Direito Constitucional':['Direitos e garantias fundamentais','Segurança pública (art. 144)','Administração pública','Organização do Estado'],
+ 'Direitos Humanos':['Declaração Universal dos Direitos Humanos','Tratados e convenções','Uso da força e abordagem policial','Direitos das minorias'],
+ 'Noções de Direito Penal':['Aplicação da lei penal','Crime: conceito e elementos','Excludentes de ilicitude','Crimes contra a pessoa e o patrimônio'],
+ 'Atualidades':['Segurança pública no Brasil','Meio ambiente','Tecnologia e sociedade','Política e economia']
+};
+function editalStats(){
+  const st=store.get(KEY.edital,{});let total=0,done=0;
+  Object.entries(EDITAL).forEach(([m,ts])=>ts.forEach(t=>{total++;if(st[m+'|'+t])done++}));
+  return {total,done,pct:total?Math.round(done/total*100):0};
+}
+function renderEdital(){
+  const st=store.get(KEY.edital,{});
+  $('#edList').innerHTML=Object.entries(EDITAL).map(([m,ts])=>`
+    <details data-mat="${esc(m)}"><summary>${esc(m)} <span class="counter" data-cnt></span></summary>
+    <div class="in"><ul class="clean">${ts.map(t=>`<li><label class="chk"><input type="checkbox" data-ed="${esc(m+'|'+t)}" ${st[m+'|'+t]?'checked':''}> ${esc(t)}</label></li>`).join('')}</ul></div></details>`).join('');
+  updEdital();
+}
+function updEdital(){
+  $$('#edList details').forEach(d=>{
+    const boxes=$$('input[data-ed]',d);
+    $('[data-cnt]',d).textContent=`(${boxes.filter(b=>b.checked).length}/${boxes.length})`;
+  });
+  const s=editalStats();$('#edPct').textContent=s.pct+'%';$('#edBar').style.width=s.pct+'%';
+}
+
+/* =====================================================================
+   GUIA
+   ===================================================================== */
+function updCount(){
+  const v=$('#examDate').value;store.set(KEY.prova,v);
+  if(!v){$('#countdown').textContent='--';return}
+  const hoje=new Date();hoje.setHours(0,0,0,0);
+  const d=Math.ceil((new Date(v+'T00:00:00')-hoje)/DAY);
+  $('#countdown').textContent=d>=0?d:'0';
+}
+function renderGuia(){
+  $('#gEdital').textContent=editalStats().pct+'%';
+  $('#gDue').textContent=carregarCad().filter(c=>c.due<=Date.now()).length;
+  const h=store.get(KEY.hist,[]);$('#gLast').textContent=h.length?h[0].pct+'%':'--';
+}
+
+/* =====================================================================
+   CADASTRO (nome do aluno)
+   ===================================================================== */
+function abrirDlg(html){$('#dlgBox').innerHTML=html;$('#dlg').classList.add('open')}
+function fecharDlg(){$('#dlg').classList.remove('open')}
+function cadastro(){
+  abrirDlg(`<h3 style="color:var(--neon)">Identificação do aluno</h3>
+    <p class="sub">O nome aparece no cabeçalho e nas mensagens do Modo Astra.</p>
+    <label for="inNome">Nome</label>
+    <input id="inNome" maxlength="40" value="${esc(nome())}">
+    <div class="row" style="margin-top:12px">
+      <button class="btn" data-act="fecharDlg">Cancelar</button>
+      <button class="btn primary" data-act="salvarCadastro">Salvar</button>
+    </div>`);
+  setTimeout(()=>{const i=$('#inNome');if(i)i.focus()},50);
+}
+function salvarCadastro(){
+  const v=$('#inNome').value.trim();
+  if(!v){toast('Digite um nome.');return}
+  store.set(KEY.nome,v);atualizarStatus();fecharDlg();toast('Identificação salva.');
+}
+
+/* =====================================================================
+   TAF POR PERFIL
+   ===================================================================== */
+const TAF_DEF={masc:{corr:2000,flex:20,abd:30},fem:{corr:1600,flex:15,abd:25}};
+const TAF_TESTS=[['corr','Corrida 12 min','m'],['flex','Flexão de braço','rep'],['abd','Abdominal 1 min','rep']];
+function tafState(){
+  const s=store.get(KEY.taf,null);
+  if(s&&s.min&&s.val)return s;
+  return {perfil:'masc',min:JSON.parse(JSON.stringify(TAF_DEF)),val:{masc:{},fem:{}}};
+}
+function renderTAF(){
+  const s=tafState(),p=s.perfil;
+  $('#tafM').classList.toggle('sel',p==='masc');$('#tafF').classList.toggle('sel',p==='fem');
+  $('#tafMin').innerHTML=TAF_TESTS.map(([id,n,u])=>`<div><label>${n} (${u})</label><input type="number" inputmode="numeric" min="0" data-taf-min="${id}" value="${s.min[p][id]??''}"></div>`).join('');
+  $('#tafVal').innerHTML=TAF_TESTS.map(([id,n,u])=>`<div><label>${n} (${u})</label><input type="number" inputmode="numeric" min="0" data-taf-val="${id}" value="${s.val[p][id]??''}" placeholder="seu resultado"></div>`).join('');
+  calcTAF();
+}
+function calcTAF(){
+  const s=tafState(),p=s.perfil;let html='',ok=true,any=false;
+  TAF_TESTS.forEach(([id,n,u])=>{
+    const min=parseFloat(s.min[p][id]),val=parseFloat(s.val[p][id]);
+    if(isNaN(val)||isNaN(min)||min<=0){html+=`<li><b>${n}</b>: <span class="counter">não informado</span></li>`;ok=false;return}
+    any=true;const pass=val>=min,pct=Math.round(val/min*100);if(!pass)ok=false;
+    html+=`<li><b>${n}</b>: ${val} ${u} / mínimo ${min} ${u} <span class="pill ${pass?'g':'r'}">${pass?'APTO':'INAPTO'} · ${pct}%</span>${pass?'':`<br><span class="counter">Faltam ${Math.ceil(min-val)} ${u}</span>`}</li>`;
+  });
+  const minC=parseFloat(s.min[p].corr);
+  let ritmo='';
+  if(minC>0){const sec=Math.round(720/(minC/1000));ritmo=`<p class="counter" style="margin-top:8px">Ritmo mínimo na corrida: ${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')} min/km.</p>`}
+  $('#tafOut').innerHTML=`<ul class="clean">${html}</ul>${ritmo}`+(any?`<div class="card ${ok?'ok':''}" style="margin:10px 0 0;${ok?'':'border-color:var(--warn)'}">${ok?'✅ Todos os mínimos atingidos. Mantenha a constância.':'⚠️ Há testes abaixo do mínimo ou em branco. Priorize-os nos próximos treinos.'}</div>`:'');
+}
+
+/* =====================================================================
+   REDAÇÃO COM MEDIDOR DE LINHAS
+   ===================================================================== */
+const TEMAS=['O papel da polícia militar na construção da cidadania','Segurança pública e participação da sociedade','Uso de tecnologia no policiamento e direitos individuais','Violência urbana: causas e caminhos de superação','Educação como instrumento de prevenção à criminalidade'];
+function redCfg(){const c=store.get(KEY.redCfg,{});return {min:+c.min||20,max:+c.max||30,cpl:+c.cpl||80}}
+function renderRedacao(){
+  const c=redCfg();
+  $('#tema').innerHTML=TEMAS.map(t=>`<option>${esc(t)}</option>`).join('');
+  const tm=store.get(KEY.tema,TEMAS[0]);if(TEMAS.includes(tm))$('#tema').value=tm;
+  $('#redTxt').value=store.get(KEY.red,'');
+  $('#cfgMin').value=c.min;$('#cfgMax').value=c.max;$('#cfgCpl').value=c.cpl;
+  atualizarRedacao();
+}
+function atualizarRedacao(){
+  const c=redCfg(),t=$('#redTxt').value;
+  const palavras=t.trim()?t.trim().split(/\s+/).length:0;
+  const linhas=t.split('\n').filter(x=>x.trim()).reduce((a,p)=>a+Math.max(1,Math.ceil(p.length/c.cpl)),0);
+  $('#redInfo').innerHTML=`Linhas estimadas: <b style="color:var(--neon)">${linhas}</b> (edital: ${c.min} a ${c.max}) · Palavras: <b>${palavras}</b> · Caracteres: <b>${t.length}</b>`;
+  $('#redBar').style.width=Math.min(100,Math.round(linhas/c.max*100))+'%';
+  const g=[];for(let i=1;i<=c.max;i++)g.push(`<span class="${i<=linhas?'used':''} ${i===c.min?'min':''}">${i}</span>`);
+  $('#redGutter').innerHTML=g.join('');
+  const av=$('#redAviso'),meta=Math.round((c.min+c.max)/2);
+  av.className='';
+  if(linhas===0){av.textContent='';return}
+  av.classList.add('show');
+  if(linhas<c.min){av.classList.add('al-bad');av.textContent=`🚨 Abaixo do mínimo de ${c.min} linhas. Texto insuficiente pode ser desclassificado ou zerado. Confirme a regra no edital.`}
+  else if(linhas>c.max){av.classList.add('al-warn');av.textContent=`⚠️ Acima do máximo de ${c.max} linhas. Enxugue o texto para caber na folha.`}
+  else if(linhas<meta){av.classList.add('al-warn');av.textContent=`⚠️ Dentro do mínimo, mas abaixo da meta sugerida (${meta} linhas). Desenvolva melhor os argumentos.`}
+  else{av.classList.add('al-ok');av.textContent=`✔ Extensão adequada (${linhas} linhas), dentro da faixa do edital.`}
+}
+
+/* =====================================================================
+   PODCLASS
+   ===================================================================== */
+const PODS=[
+ {t:'Artigo 144 da CF/88',m:'Direito Constitucional',x:'O artigo cento e quarenta e quatro da Constituição Federal trata da segurança pública, dever do Estado, direito e responsabilidade de todos. Às polícias militares cabem a polícia ostensiva e a preservação da ordem pública. À polícia civil cabe a polícia judiciária e a apuração de infrações penais.'},
+ {t:'Crase em dois minutos',m:'Português',x:'A crase é a fusão da preposição a com o artigo a, ou com os pronomes aquele, aquela e aquilo. Regra prática: troque a palavra feminina por uma masculina. Se surgir ao, use crase. Não se usa crase antes de verbos, de palavras masculinas e de pronomes pessoais.'},
+ {t:'XABCDE do trauma',m:'APH',x:'No atendimento pré-hospitalar, a avaliação primária segue o X A B C D E. X, hemorragia exsanguinante. A, vias aéreas com proteção da coluna cervical. B, respiração. C, circulação. D, disfunção neurológica. E, exposição e controle da hipotermia.'},
+ {t:'Negação de proposições',m:'Raciocínio Lógico',x:'Para negar Todo A é B, dizemos Algum A não é B. Para negar Algum A é B, dizemos Nenhum A é B. Na conjunção, trocamos E por OU e negamos cada parte. Na condicional, mantemos a primeira, trocamos o se então por E e negamos a segunda.'},
+ {t:'Uso da força',m:'Direitos Humanos',x:'O uso da força pelo agente de segurança deve respeitar os princípios da legalidade, da necessidade e da proporcionalidade. A força só é empregada quando outros meios não bastam, e em nível compatível com a ameaça enfrentada.'},
+ {t:'RCP: passo a passo',m:'APH',x:'Confirme a segurança da cena. Verifique se a vítima responde e respira. Acione ajuda e peça um desfibrilador. Comece as compressões no centro do tórax, de cem a cento e vinte por minuto, com cinco a seis centímetros de profundidade. Use o desfibrilador assim que possível.'}
+];
+function renderPods(){
+  $('#podList').innerHTML=PODS.map((p,i)=>`<div class="card"><span class="tag">${esc(p.m)}</span><h3 style="margin-top:6px">${esc(p.t)}</h3><p class="sub">${esc(p.x)}</p><button class="btn primary" data-act="podPlay" data-arg="${i}">🔊 Ouvir mini-aula</button></div>`).join('');
+  if(!('speechSynthesis' in window))podNote('Seu navegador não oferece leitura por voz. Use os textos como material de leitura.');
+}
+function podNote(t){const n=$('#podNote');n.textContent=t;n.style.display=t?'block':'none'}
+function podPlay(i){
+  if(!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(PODS[i].x);u.lang='pt-BR';u.rate=parseFloat($('#podRate').value)||1;
+  u.onend=()=>podNote('');
+  speechSynthesis.speak(u);podNote('Reproduzindo: '+PODS[i].t);
+}
+function podPause(){
+  if(!('speechSynthesis' in window))return;
+  if(speechSynthesis.paused)speechSynthesis.resume();else if(speechSynthesis.speaking)speechSynthesis.pause();
+}
+function podStop(){if('speechSynthesis' in window)speechSynthesis.cancel();podNote('')}
+
+/* =====================================================================
+   CADERNO DE ERROS + FLASHCARDS (repetição espaçada)
+   ===================================================================== */
+const BASE_CARDS=[
+ ['Qual a função das polícias militares no art. 144 da CF?','Polícia ostensiva e preservação da ordem pública.','Dir. Constitucional'],
+ ['O que significa o X no XABCDE?','Hemorragia exsanguinante (controle de sangramento grave).','APH'],
+ ['Qual a negação de "Todo policial é corajoso"?','Algum policial não é corajoso.','Raciocínio Lógico'],
+ ['Frequência de compressões na RCP do adulto?','100 a 120 por minuto, com 5 a 6 cm de profundidade.','APH'],
+ ['Fogo de Classe B envolve...','Líquidos inflamáveis e gases.','Incêndio'],
+ ['Elementos do tetraedro do fogo?','Combustível, comburente, calor e reação em cadeia.','Incêndio'],
+ ['Ano da Declaração Universal dos Direitos Humanos?','1948 (ONU).','Direitos Humanos'],
+ ['Verbo "fazer" indicando tempo decorrido:','Impessoal, na 3ª pessoa do singular: "Faz dois anos".','Português'],
+ ['Princípios do uso da força?','Legalidade, necessidade e proporcionalidade.','Direitos Humanos']
+];
+const carregarCad=()=>store.get(KEY.cad,[]);
+const salvarCad=c=>store.set(KEY.cad,c);
+const novoCard=(id,tipo,m,q,a)=>({id,tipo,m,q,a,ef:2.5,int:0,reps:0,due:0});
+function seedCards(){
+  if(store.get(KEY.cad,null)!==null)return;
+  salvarCad(BASE_CARDS.map((c,i)=>novoCard('b'+i,'base',c[2],c[0],c[1])));
+}
+function calcAgenda(c,nota){
+  let ef=c.ef,int=c.int,reps=c.reps,ms;
+  if(nota===0){reps=0;int=0;ef=Math.max(1.3,ef-0.2);ms=10*60000}
+  else{
+    if(nota===1){int=Math.max(1,Math.round((int||1)*1.2));ef=Math.max(1.3,ef-0.15)}
+    else if(nota===2){int=reps===0?1:reps===1?3:Math.round(int*ef)}
+    else{int=reps===0?3:reps===1?5:Math.round(Math.max(int,1)*ef*1.3);ef+=0.15}
+    reps++;ms=int*DAY;
+  }
+  return {ef,int,reps,due:Date.now()+ms};
+}
+function rotulo(c,nota){const ms=calcAgenda(c,nota).due-Date.now();return ms<DAY?'10 min':Math.round(ms/DAY)+' d'}
+function adicionarErros(qs){
+  const cad=carregarCad();let n=0;
+  qs.forEach(q=>{
+    const id='q'+q.id,ex=cad.find(c=>c.id===id);
+    const resp=`${LET[q.a]}) ${q.o[q.a]}. ${q.e}`;
+    if(ex){ex.reps=0;ex.int=0;ex.due=0;ex.ef=Math.max(1.3,ex.ef-0.2)}
+    else{cad.push(novoCard(id,'erro',q.m,q.t,resp));n++}
+  });
+  salvarCad(cad);return n;
+}
+let fc=null;
+function fcStart(modo){
+  let l=carregarCad();
+  l=modo==='erro'?l.filter(c=>c.tipo==='erro'):l.filter(c=>c.due<=Date.now());
+  l.sort((a,b)=>a.due-b.due);
+  if(!l.length){toast('Nenhum cartão disponível agora.');return}
+  fc={modo,fila:l.map(c=>c.id),pos:0,mostrou:false,acertos:0,erros:0};
+  renderCaderno();
+}
+function fcGrade(n){
+  n=+n;if(!fc||!fc.mostrou)return;
+  const cad=carregarCad(),id=fc.fila[fc.pos],c=cad.find(x=>x.id===id);
+  if(c){Object.assign(c,calcAgenda(c,n));salvarCad(cad)}
+  if(n===0){fc.fila.push(id);fc.erros++}else fc.acertos++;
+  fc.pos++;fc.mostrou=false;renderCaderno();
+}
+function renderCaderno(){
+  const area=$('#fcArea');if(!area)return;
+  const cad=carregarCad(),now=Date.now();
+  if(fc&&fc.pos<fc.fila.length){
+    const c=cad.find(x=>x.id===fc.fila[fc.pos]);
+    if(!c){fc.pos++;renderCaderno();return}
+    const pct=Math.round(fc.pos/fc.fila.length*100);
+    area.innerHTML=`
+      <div class="card"><div style="display:flex;justify-content:space-between"><span class="counter">${fc.modo==='erro'?'🔥 Modo Redenção':'Revisão do dia'} · ${fc.fila.length-fc.pos} restantes</span><span class="counter">✔ ${fc.acertos} ✖ ${fc.erros}</span></div><div class="bar" style="margin-top:8px"><i style="width:${pct}%"></i></div></div>
+      <div class="fcard"><span class="tag">${esc(c.m)}</span><div class="face">${esc(c.q)}</div>${fc.mostrou?`<div class="ans">${esc(c.a)}</div>`:''}</div>
+      ${fc.mostrou
+        ?`<div class="grades">
+            <button class="btn danger" data-act="fcGrade" data-arg="0">Errei<small>${rotulo(c,0)}</small></button>
+            <button class="btn" data-act="fcGrade" data-arg="1">Difícil<small>${rotulo(c,1)}</small></button>
+            <button class="btn" data-act="fcGrade" data-arg="2">Bom<small>${rotulo(c,2)}</small></button>
+            <button class="btn primary" data-act="fcGrade" data-arg="3">Fácil<small>${rotulo(c,3)}</small></button>
+          </div>`
+        :`<button class="btn primary full" data-act="fcShow">Mostrar resposta</button>`}
+      <button class="btn full" style="margin-top:8px" data-act="fcBack">← Encerrar sessão</button>`;
+    return;
+  }
+  if(fc){
+    const r=fc;fc=null;
+    area.innerHTML=`<div class="card neon" style="text-align:center"><div class="big" style="font-size:34px">🏁</div><h3>Sessão concluída</h3><p class="sub">Acertos: ${r.acertos} · Repetições após erro: ${r.erros}</p><button class="btn primary full" data-act="fcBack">Voltar ao baralho</button></div>`;
+    return;
+  }
+  const due=cad.filter(c=>c.due<=now).length,erros=cad.filter(c=>c.tipo==='erro');
+  area.innerHTML=`
+    <div class="kpi">
+      <div class="card"><div class="n">${cad.length}</div><div class="counter">Cartões</div></div>
+      <div class="card"><div class="n">${due}</div><div class="counter">Vencidos</div></div>
+      <div class="card"><div class="n">${erros.length}</div><div class="counter">No caderno de erros</div></div>
+    </div>
+    <div class="row" style="margin-bottom:12px">
+      <button class="btn primary" data-act="fcStart" data-arg="due" ${due?'':'disabled'}>▶ Revisar vencidos</button>
+      <button class="btn" data-act="fcStart" data-arg="erro" ${erros.length?'':'disabled'}>🔥 Modo Redenção</button>
+    </div>
+    <div class="card">
+      <h3>📕 Caderno de Erros</h3>
+      ${erros.length?`<ul class="clean">${erros.map(c=>`<li><div style="display:flex;gap:8px;justify-content:space-between;align-items:flex-start"><div><span class="tag">${esc(c.m)}</span><br>${esc(c.q.length>110?c.q.slice(0,110)+'…':c.q)}<br><span class="counter">${c.due<=now?'vence agora':'próxima revisão: '+new Date(c.due).toLocaleDateString('pt-BR')}</span></div><button class="btn sm danger" data-act="fcDel" data-arg="${esc(c.id)}">Remover</button></div></li>`).join('')}</ul>
+      <button class="btn danger full" style="margin-top:10px" data-act="fcLimpar">Apagar Caderno de Erros</button>`
+      :'<p class="sub" style="margin:0">Vazio. As questões que você errar ou deixar em branco nos simulados aparecem aqui.</p>'}
+    </div>`;
+}
+
+/* =====================================================================
+   POMODORO (baseado em horário, resiste a abas em segundo plano)
+   ===================================================================== */
+const pomo={dur:1500,left:1500,label:'Foco',end:0,running:false,iv:null};
+function pomoDraw(){
+  $('#pomoTime').textContent=fmt(pomo.left);$('#pomoMode').textContent=pomo.label;
+  $('#pomoBtn').textContent=pomo.running?'⏸ Pausar':'▶ Iniciar';
+  $('#pomoFloat').textContent=fmt(pomo.left);updPomoFloat();
+}
+function updPomoFloat(){$('#pomoFloat').classList.toggle('show',pomo.running&&tabAtual!=='pomo')}
+function pomoTick(){
+  pomo.left=Math.max(0,Math.ceil((pomo.end-Date.now())/1000));
+  if(pomo.left<=0)pomoDone();
+  pomoDraw();
+}
+function pomoPause(){
+  if(!pomo.running)return;
+  pomo.left=Math.max(0,Math.ceil((pomo.end-Date.now())/1000));
+  clearInterval(pomo.iv);pomo.running=false;pomoDraw();
+}
+function pomoToggle(){
+  if(pomo.running){pomoPause();return}
+  if(pomo.left<=0)pomo.left=pomo.dur;
+  pomo.end=Date.now()+pomo.left*1000;pomo.running=true;
+  pomo.iv=setInterval(pomoTick,500);pomoDraw();
+}
+function pomoSet(s,l){clearInterval(pomo.iv);pomo.running=false;pomo.left=pomo.dur=s;pomo.label=l;pomoDraw()}
+function pomoDone(){
+  clearInterval(pomo.iv);pomo.running=false;pomo.left=0;
+  if(pomo.label==='Foco'){
+    const today=new Date().toDateString(),d=store.get(KEY.pomoDay,{date:'',n:0});
+    d.n=(d.date===today?d.n:0)+1;d.date=today;store.set(KEY.pomoDay,d);$('#pomoCount').textContent=d.n;
+  }
+  beep();buzz();toast('⏱️ '+pomo.label+' finalizado!');
+}
+
+/* =====================================================================
+   MODO FOCO (SIMULADOR DE PROVA)
+   ===================================================================== */
+const cfg={set:'vunesp',min:45};
+let sim=null,simIv=null;
+function syncSetup(){
+  $('#bVun').classList.toggle('sel',cfg.set==='vunesp');
+  $('#bPP').classList.toggle('sel',cfg.set==='paulista');
+  $$('[data-min]').forEach(b=>b.classList.toggle('sel',+b.dataset.min===cfg.min));
+  if(!sim){$('#fTimer').textContent=fmt(cfg.min*60);$('#fTimer').classList.remove('low')}
+}
+function openFocus(){
+  pomoPause();podStop();
+  document.body.classList.add('focus');
+  $('#focusModal').classList.add('open');
+  $('#fSetup').classList.remove('hidden');$('#fExam').classList.add('hidden');
+  sim=null;syncSetup();
+}
+function startSim(){
+  const qs=QUESTIONS.filter(q=>q.set===cfg.set);
+  sim={set:cfg.set,qs,i:0,resp:{},marks:{},dur:cfg.min*60,end:Date.now()+cfg.min*60000};
+  $('#fSetup').classList.add('hidden');$('#fExam').classList.remove('hidden');
+  desenhar(true);simTick();
+  clearInterval(simIv);simIv=setInterval(simTick,500);
+}
+function simTick(){
+  if(!sim)return;
+  const left=Math.max(0,Math.ceil((sim.end-Date.now())/1000));
+  $('#fTimer').textContent=fmt(left);$('#fTimer').classList.toggle('low',left<=300);
+  if(left<=0)finalizar(true);
+}
+function desenhar(topo){
+  if(!sim)return;
+  const q=sim.qs[sim.i],r=sim.resp[q.id],n=sim.qs.length,resp=Object.keys(sim.resp).length;
+  $('#fExam').innerHTML=`
+    <div class="card neon" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <b>${sim.set==='vunesp'?'📘 Simulado Vunesp':'📗 Simulado Prova Paulista'}</b>
+      <span class="counter">${resp}/${n} respondidas</span>
+    </div>
+    <div class="q">
+      <div class="meta">QUESTÃO ${sim.i+1} DE ${n} · ${esc(q.m)}</div>
+      <p class="t">${esc(q.t)}</p>
+      ${q.o.map((o,i)=>`<button class="opt ${r===i?'picked':''}" data-act="op" data-arg="${i}"><b>${LET[i]})</b><span>${esc(o)}</span></button>`).join('')}
+      <div class="row" style="margin-top:8px">
+        <button class="btn sm ${sim.marks[q.id]?'sel':''}" data-act="mark">🚩 ${sim.marks[q.id]?'Marcada':'Marcar para revisão'}</button>
+        <button class="btn sm" data-act="clearAns" ${r===undefined?'disabled':''}>Limpar resposta</button>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn" data-act="nav" data-arg="-1" ${sim.i===0?'disabled':''}>← Anterior</button>
+      <button class="btn" data-act="nav" data-arg="1" ${sim.i===n-1?'disabled':''}>Próxima →</button>
+    </div>
+    <div class="palette">${sim.qs.map((x,k)=>`<button class="${k===sim.i?'cur':sim.resp[x.id]!==undefined?'ans':''} ${sim.marks[x.id]?'mk':''}" data-act="goto" data-arg="${k}" aria-label="Questão ${k+1}">${k+1}</button>`).join('')}</div>
+    <button class="btn primary full" data-act="finish">✅ Finalizar e Diagnosticar</button>`;
+  if(topo)$('#fBody').scrollTop=0;
+}
+function cancelarSimulado(){
+  clearInterval(simIv);sim=null;
+  $('#focusModal').classList.remove('open');document.body.classList.remove('focus');
+}
+function exitFocus(){
+  if(sim&&!confirm('Sair agora encerra o simulado sem salvar o resultado. Deseja sair do Modo Foco?'))return;
+  cancelarSimulado();
+}
+function finalizar(auto){
+  if(!sim)return;
+  const respondidas=Object.keys(sim.resp).length;
+  if(!auto){
+    const msg=respondidas<sim.qs.length?`Você respondeu ${respondidas} de ${sim.qs.length}. Finalizar mesmo assim?`:'Deseja finalizar o simulado agora?';
+    if(!confirm(msg))return;
+  }
+  clearInterval(simIv);
+  const usado=sim.dur-Math.max(0,Math.ceil((sim.end-Date.now())/1000));
+  const subj={},erros=[];let hit=0;
+  sim.qs.forEach(q=>{
+    subj[q.m]=subj[q.m]||{ok:0,n:0};subj[q.m].n++;
+    if(sim.resp[q.id]===q.a){subj[q.m].ok++;hit++}else erros.push(q);
+  });
+  const novos=adicionarErros(erros);
+  const res={date:new Date().toLocaleString('pt-BR'),set:sim.set,total:sim.qs.length,hit,pct:Math.round(hit/sim.qs.length*100),used:usado,timeout:!!auto,answered:respondidas,subj,resp:sim.resp,erros:erros.map(q=>q.id),novos};
+  const h=store.get(KEY.hist,[]);h.unshift(res);store.set(KEY.hist,h.slice(0,15));
+  sim=null;
+  $('#focusModal').classList.remove('open');document.body.classList.remove('focus');
+  showAstra(res);
+}
+
+/* =====================================================================
+   MODO ASTRA (DIAGNÓSTICO PÓS-PROVA)
+   ===================================================================== */
+function showAstra(r){
+  if(!r){toast('Ainda não há diagnóstico. Faça um simulado primeiro.');return}
+  const forte=[],fraco=[],atencao=[];
+  Object.entries(r.subj).forEach(([m,v])=>{
+    const p=Math.round(v.ok/v.n*100);
+    (p>=70?forte:p<60?fraco:atencao).push({m,p});
+  });
+  let titulo,msg;
+  if(r.pct>=80){titulo='Nível de aprovação. Missão cumprida com honra.';msg=`${esc(nome())}, seu desempenho está no patamar de quem passa. Agora a meta é constância: simulados regulares e revisão dos poucos pontos fracos.`}
+  else if(r.pct>=60){titulo='Você está no caminho certo.';msg=`${esc(nome())}, a base está construída. Falta lapidar os detalhes. Cada questão errada agora é um ponto ganho no dia da prova.`}
+  else{titulo='Derrota na batalha não é derrota na guerra.';msg=`${esc(nome())}, este resultado é um mapa, não uma sentença. Você descobriu exatamente onde treinar. Quem recomeça amanhã já venceu o resultado de hoje.`}
+  const foco=fraco.length?fraco:atencao.length?atencao:forte.slice(0,1);
+  const plano=foco.map((w,i)=>`<li><b>Dia ${i*2+1}–${i*2+2} · ${esc(w.m)}</b><br>① Revise a teoria por 25 min (1 Pomodoro).<br>② Resolva 15 questões no Banco e refaça as que errou.<br>③ Revise os cartões dessa matéria no Modo Redenção.</li>`).join('');
+  const pill=(a,c)=>a.length?a.map(x=>`<span class="pill ${c}">${esc(x.m)} · ${x.p}%</span>`).join(''):'<span class="counter">Nenhuma matéria neste critério.</span>';
+  const errosQ=(r.erros||[]).map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+  const gabarito=errosQ.length?`<details><summary>📖 Gabarito comentado dos erros (${errosQ.length})</summary><div class="in">${errosQ.map(q=>{
+      const u=r.resp&&r.resp[q.id];
+      return `<div style="margin-bottom:12px"><span class="tag">${esc(q.m)}</span><p style="margin:6px 0"><b>${esc(q.t)}</b></p><p class="counter">Sua resposta: ${u===undefined?'em branco':esc(LET[u]+') '+q.o[u])}</p><p style="color:var(--ok);font-size:13px">Correta: ${LET[q.a]}) ${esc(q.o[q.a])}</p><p style="font-size:13px;color:var(--muted)">💡 ${esc(q.e)}</p></div>`}).join('')}</div></details>`:'';
+  $('#astraBody').innerHTML=`
+    <div class="kpi">
+      <div class="card neon"><div class="n">${r.pct}%</div><div class="counter">Porcentagem de acerto</div></div>
+      <div class="card"><div class="n">${r.hit}/${r.total}</div><div class="counter">Acertos</div></div>
+    </div>
+    <div class="card"><span class="counter">${esc(r.date)} · ${r.set==='vunesp'?'Vunesp':'Prova Paulista'} · Tempo usado: ${fmt(r.used)}${r.timeout?' · tempo esgotado':''}</span></div>
+    <div class="card ok"><h3>💪 Pontos Fortes</h3>${pill(forte,'g')}<p class="counter" style="margin-top:6px">Matérias com 70% ou mais de acerto.</p></div>
+    <div class="card bad"><h3>🎯 Pontos Fracos</h3>${pill(fraco,'r')}${atencao.length?`<h3 style="margin-top:10px">⚠️ Em atenção</h3>${pill(atencao,'y')}`:''}<p class="counter" style="margin-top:6px">Fracos: abaixo de 60%. Atenção: de 60% a 69%.</p></div>
+    <div class="card neon"><h3>🔥 ${esc(titulo)}</h3><p>${msg}</p></div>
+    <div class="card"><h3>🛡️ Plano de Redenção</h3><ul class="clean">${plano}<li><b>Fechamento</b><br>Refaça um simulado ao concluir o plano e compare a evolução aqui no Modo Astra.</li></ul>
+      ${(r.erros&&r.erros.length)?`<p class="counter" style="margin-top:8px">${r.novos?r.novos+' nova(s) questão(ões) enviada(s)':'Questões erradas atualizadas'} no Caderno de Erros.</p>`:''}</div>
+    ${gabarito}
+    <div class="row" style="margin-top:12px">
+      ${(r.erros&&r.erros.length)?`<button class="btn primary" data-act="astraRedencao">🔥 Iniciar Modo Redenção</button>`:''}
+      <button class="btn" data-act="novoSim">🎯 Novo Simulado</button>
+      <button class="btn" data-act="closeAstra">Voltar</button>
+    </div>`;
+  $('#astraModal').classList.add('open');document.body.classList.add('modal-open');
+  $('#astraBody').scrollTop=0;
+}
+function closeAstra(){
+  $('#astraModal').classList.remove('open');document.body.classList.remove('modal-open');
+  if(tabAtual==='astra')renderAstraTab();
+}
+function renderAstraTab(){
+  const h=store.get(KEY.hist,[]),l=h[0];
+  $('#astraSummary').innerHTML=l
+    ?`<h3>Último diagnóstico</h3><div class="big" style="font-size:38px">${l.pct}%</div><p class="sub" style="text-align:center;margin:0">${l.hit}/${l.total} acertos · ${l.set==='vunesp'?'Vunesp':'Prova Paulista'}</p>`
+    :'Nenhum diagnóstico ainda. Faça um simulado no Modo Foco para gerar seu relatório.';
+  $('#astraEvo').innerHTML=h.length
+    ?`<div class="evo">${h.slice(0,10).reverse().map(x=>`<div style="height:${Math.max(4,x.pct)}%" title="${esc(x.date)}"><span>${x.pct}</span></div>`).join('')}</div>`
+    :'<p class="sub" style="margin:0">Sem dados ainda.</p>';
+  $('#astraHist').innerHTML=h.length
+    ?h.map(x=>`<li>${esc(x.date)} · ${x.set==='vunesp'?'Vunesp':'Paulista'} · <b style="color:var(--neon)">${x.pct}%</b> (${x.hit}/${x.total})</li>`).join('')
+    :'<li class="sub" style="margin:0">Sem registros.</li>';
+}
+
+/* =====================================================================
+   DESPACHO DE EVENTOS
+   ===================================================================== */
+const ACT={
+  cadastro,salvarCadastro,fecharDlg,
+  openFocus,exitFocus,startSim,
+  pickSim:a=>{cfg.set=a;syncSetup()},
+  pickTime:a=>{cfg.min=+a;syncSetup()},
+  op:a=>{if(!sim)return;sim.resp[sim.qs[sim.i].id]=+a;desenhar()},
+  clearAns:()=>{if(!sim)return;delete sim.resp[sim.qs[sim.i].id];desenhar()},
+  mark:()=>{if(!sim)return;const id=sim.qs[sim.i].id;if(sim.marks[id])delete sim.marks[id];else sim.marks[id]=1;desenhar()},
+  nav:a=>{if(!sim)return;sim.i=Math.max(0,Math.min(sim.qs.length-1,sim.i+(+a)));desenhar(true)},
+  goto:a=>{if(!sim)return;sim.i=+a;desenhar(true)},
+  finish:()=>finalizar(false),
+  closeAstra,
+  astraLast:()=>showAstra(store.get(KEY.hist,[])[0]),
+  astraRedencao:()=>{closeAstra();showTab('flash');fcStart('erro')},
+  novoSim:()=>{closeAstra();openFocus()},
+  bancoResp:a=>{
+    const [id,i]=a.split(':').map(Number),q=QUESTIONS.find(x=>x.id===id),box=$('#bq'+id);
+    if(!q||!box||box.dataset.done)return;box.dataset.done=1;
+    $$('.opt',box).forEach((el,k)=>{if(k===q.a)el.classList.add('ok');else if(k===i)el.classList.add('bad')});
+    $('.expl',box).classList.add('show');
+  },
+  tafPerfil:a=>{const s=tafState();s.perfil=a;store.set(KEY.taf,s);renderTAF()},
+  tafReset:()=>{const s=tafState();s.val[s.perfil]={};store.set(KEY.taf,s);renderTAF()},
+  redLimpar:()=>{if(confirm('Deseja apagar o texto da redação?')){store.set(KEY.red,'');$('#redTxt').value='';atualizarRedacao()}},
+  podPlay:a=>podPlay(+a),podPause,podStop,
+  pomoToggle,pomoReset:()=>pomoSet(pomo.dur,pomo.label),
+  pomoSet:a=>{const [m,l]=a.split(':');pomoSet(+m*60,l)},
+  fcStart,fcShow:()=>{if(fc){fc.mostrou=true;renderCaderno()}},
+  fcGrade,fcBack:()=>{fc=null;renderCaderno()},
+  fcDel:a=>{salvarCad(carregarCad().filter(c=>c.id!==a));renderCaderno()},
+  fcLimpar:()=>{if(confirm('Apagar todo o Caderno de Erros? Os cartões-base serão mantidos.')){salvarCad(carregarCad().filter(c=>c.tipo!=='erro'));renderCaderno()}}
+};
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act],[data-tab]');
+  if(!el)return;
+  if(el.dataset.tab){showTab(el.dataset.tab);return}
+  const f=ACT[el.dataset.act];if(f)f(el.dataset.arg,el);
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.matches('[data-taf-min]')){const s=tafState();s.min[s.perfil][t.dataset.tafMin]=t.value;store.set(KEY.taf,s);calcTAF()}
+  else if(t.matches('[data-taf-val]')){const s=tafState();s.val[s.perfil][t.dataset.tafVal]=t.value;store.set(KEY.taf,s);calcTAF()}
+  else if(t.id==='redTxt'){store.set(KEY.red,t.value);atualizarRedacao()}
+  else if(t.id==='cfgMin'||t.id==='cfgMax'||t.id==='cfgCpl'){store.set(KEY.redCfg,{min:$('#cfgMin').value,max:$('#cfgMax').value,cpl:$('#cfgCpl').value});atualizarRedacao()}
+  else if(t.id==='notes')store.set(KEY.notes,t.value);
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.matches('input[data-ed]')){const st=store.get(KEY.edital,{});st[t.dataset.ed]=t.checked;store.set(KEY.edital,st);updEdital()}
+  else if(t.id==='examDate')updCount();
+  else if(t.id==='tema')store.set(KEY.tema,t.value);
+  else if(t.id==='filtroMat')renderBanco();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  if($('#dlg').classList.contains('open'))fecharDlg();
+  else if($('#astraModal').classList.contains('open'))closeAstra();
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){simTick();if(pomo.running)pomoTick()}});
+window.addEventListener('beforeunload',e=>{if(sim){e.preventDefault();e.returnValue=''}});
+
+/* =====================================================================
+   INICIALIZAÇÃO
+   ===================================================================== */
+(function init(){
+  seedCards();atualizarStatus();
+  renderBanco();renderEdital();renderPods();renderTAF();renderRedacao();
+  $('#examDate').value=store.get(KEY.prova,'');updCount();
+  $('#notes').value=store.get(KEY.notes,'');
+  const d=store.get(KEY.pomoDay,{date:'',n:0});
+  $('#pomoCount').textContent=d.date===new Date().toDateString()?d.n:0;
+  pomoDraw();syncSetup();renderGuia();renderAstraTab();renderCaderno();
+})();
+</script>
+</body>
+</html>
